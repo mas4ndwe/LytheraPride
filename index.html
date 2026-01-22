@@ -7,16 +7,10 @@
     <meta name="description" content="Lythera Pride Roleplay - Tempat di mana cerita hidupmu dimulai! Rasakan petualangan roleplay tak terlupakan di tengah hujan kota.">
     <link rel="icon" href="https://cdn.discordapp.com/attachments/1459681757719826452/1462392348238676018/file_00000000601871fa9349f721e28fc6b0.png?ex=696e0681&is=696cb501&hm=34f46a8582a617d0295a9548df37e188b44df723a2d84ecfaa465ceb83e21346&" type="image/png">
     
-    <!-- TAILWIND CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-    <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- KONFIGURASI TAILWIND -->
     <script>
         tailwind.config = {
             theme: {
@@ -24,67 +18,149 @@
                     colors: {
                         primary: '#38bdf8',
                         secondary: '#0ea5e9',
+                        accent: '#7dd3fc',
                         dark: '#0f172a',
-                        light: '#f8fafc',
-                        overlay: 'rgba(15, 23, 42, 0.85)'
+                        darker: '#020617',
                     },
                     fontFamily: {
                         poppins: ['Poppins', 'sans-serif'],
+                    },
+                    animation: {
+                        'gradient': 'gradient 8s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slide-up 0.8s ease-out',
+                        'slide-down': 'slide-down 0.8s ease-out',
+                        'scale-in': 'scale-in 0.6s ease-out',
+                        'rotate-in': 'rotate-in 1s ease-out',
+                    },
+                    keyframes: {
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'pulse-glow': {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(56, 189, 248, 0.5)' },
+                            '50%': { boxShadow: '0 0 60px rgba(56, 189, 248, 0.8)' },
+                        },
+                        'slide-up': {
+                            '0%': { opacity: '0', transform: 'translateY(50px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'slide-down': {
+                            '0%': { opacity: '0', transform: 'translateY(-50px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'scale-in': {
+                            '0%': { opacity: '0', transform: 'scale(0.5)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        'rotate-in': {
+                            '0%': { opacity: '0', transform: 'rotate(-180deg) scale(0)' },
+                            '100%': { opacity: '1', transform: 'rotate(0) scale(1)' },
+                        },
                     },
                 }
             }
         }
     </script>
 
-    <!-- CUSTOM STYLES -->
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .rain-drop {
-                @apply absolute bg-primary/40 rounded-b-full pointer-events-none;
-                animation: rain linear infinite;
-            }
-            .hero-text-shadow {
-                text-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
-            }
-            .float-animation {
-                animation: float 10s ease-in-out infinite;
-            }
-            .hover-scale {
-                transition: transform 0.3s ease;
-            }
-            .hover-scale:hover {
-                transform: scale(1.03);
-            }
-            .card-glow {
-                transition: all 0.2s ease;
-            }
-            .card-glow:hover {
-                box-shadow: 0 0 50px rgb(4, 83, 180);
-            }
-        }
-
-        /* GLOBAL STYLES */
+    <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: linear-gradient(to bottom, #0f172a, #1e293b);
-            min-height: 100vh;
-            overflow-x: hidden;
             font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* ANIMASI HUJAN */
-        @keyframes rain {
+        /* Animated Background Stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Animated Gradient Border */
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .rotating-border {
+            position: absolute;
+            inset: -3px;
+            background: conic-gradient(from 0deg, #38bdf8, #7dd3fc, #0ea5e9, #38bdf8);
+            border-radius: inherit;
+            animation: borderRotate 4s linear infinite;
+            z-index: -1;
+        }
+
+        /* Wave Animation */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="rgba(56,189,248,0.1)"/></svg>') repeat-x;
+            animation: wave 10s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+
+        /* Advanced Rain Effect */
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .rain-drop {
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(56, 189, 248, 0) 0%, rgba(56, 189, 248, 0.8) 100%);
+            border-radius: 0 0 50% 50%;
+            animation: rain-fall linear infinite;
+        }
+
+        @keyframes rain-fall {
             0% {
-                transform: translateY(-10px) translateX(0) rotate(10deg);
+                transform: translateY(-10px) translateX(0);
                 opacity: 0;
             }
             10% {
@@ -94,694 +170,2055 @@
                 opacity: 1;
             }
             100% {
-                transform: translateY(100vh) translateX(15px) rotate(10deg);
+                transform: translateY(100vh) translateX(20px);
                 opacity: 0;
             }
         }
 
-        /* ANIMASI FLOAT */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-25px); }
-            100% { transform: translateY(0px); }
+        /* Glowing Text Effect */
+        .glow-text {
+            text-shadow: 
+                0 0 10px rgba(56, 189, 248, 0.8),
+                0 0 20px rgba(56, 189, 248, 0.6),
+                0 0 30px rgba(56, 189, 248, 0.4),
+                0 0 40px rgba(56, 189, 248, 0.2);
         }
 
-        /* ANIMASI FADE DOWN */
-        @keyframes fadeDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Neon Border Effect */
+        .neon-border {
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ANIMASI FADE UP */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .neon-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #38bdf8, #7dd3fc, #38bdf8, #7dd3fc);
+            background-size: 400% 400%;
+            border-radius: inherit;
+            z-index: -1;
+            animation: gradient 6s linear infinite;
+            opacity: 0.6;
         }
 
-        /* ANIMASI SCALE IN */
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        /* Glass Morphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* ANIMASI BOUNCE IN */
-        @keyframes bounceIn {
+        /* Particle Background */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 20s linear infinite;
+        }
+
+        @keyframes particle-float {
             0% {
+                transform: translateY(100vh) translateX(0) scale(0);
                 opacity: 0;
-                transform: scale(0.5);
             }
-            70% {
-                transform: scale(1.1);
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
             }
             100% {
-                opacity: 1;
-                transform: scale(1);
+                transform: translateY(-100vh) translateX(100px) scale(1);
+                opacity: 0;
             }
         }
 
-        /* ANIMASI KLASSES */
-        .animate-fade-down {
-            animation: fadeDown 0.8s ease forwards;
-            opacity: 0;
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
         }
-        .animate-fade-up {
-            animation: fadeUp 0.8s ease forwards;
-            opacity: 0;
+
+        /* Card Hover Effects */
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .animate-scale-in {
-            animation: scaleIn 1s ease forwards;
-            opacity: 0;
+
+        .card-hover:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 
+                0 25px 50px rgba(56, 189, 248, 0.3),
+                0 0 100px rgba(56, 189, 248, 0.2);
         }
-        .animate-bounce-in {
-            animation: bounceIn 0.8s ease forwards;
-            opacity: 0;
+
+        /* Magnetic Button Effect */
+        .magnetic-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .delay-100 { animation-delay: 0.5s; }
-        .delay-200 { animation-delay: 0.6s; }
-        .delay-300 { animation-delay: 0.7s; }
-        .delay-400 { animation-delay: 0.8s; }
-        .delay-500 { animation-delay: 0.9s; }
-        .delay-600 { animation-delay: 0.10s; }
+
+        .magnetic-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .magnetic-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Animated Gradient Text */
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #7dd3fc, #38bdf8);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+        }
+
+        /* Loading Animation */
+        .loader {
+            border: 3px solid rgba(56, 189, 248, 0.1);
+            border-top: 3px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple:active::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        /* Scroll Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #38bdf8, #7dd3fc);
+            z-index: 9999;
+            transition: width 0.2s ease;
+        }
+
+        /* Parallax Effect */
+        .parallax {
+            transition: transform 0.5s ease-out;
+        }
+
+        /* Floating Animation Enhanced */
+        @keyframes floatEnhanced {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-30px) rotate(5deg); }
+            50% { transform: translateY(-15px) rotate(0deg); }
+            75% { transform: translateY(-30px) rotate(-5deg); }
+        }
+
+        .float-enhanced {
+            animation: floatEnhanced 8s ease-in-out infinite;
+        }
+
+        /* Bounce In Animation */
+        @keyframes bounceInEnhanced {
+            0% { opacity: 0; transform: scale(0.3) rotate(-180deg); }
+            50% { opacity: 1; transform: scale(1.05) rotate(10deg); }
+            70% { transform: scale(0.9) rotate(-5deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        .bounce-in-enhanced {
+            animation: bounceInEnhanced 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Slide Animations */
+        @keyframes slideInLeft {
+            0% { opacity: 0; transform: translateX(-100px) rotate(-10deg); }
+            100% { opacity: 1; transform: translateX(0) rotate(0); }
+        }
+
+        @keyframes slideInRight {
+            0% { opacity: 0; transform: translateX(100px) rotate(10deg); }
+            100% { opacity: 1; transform: translateX(0) rotate(0); }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 1s ease-out;
+        }
+
+        /* Zoom In Animation */
+        @keyframes zoomIn {
+            0% { opacity: 0; transform: scale(0) rotate(180deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        .zoom-in {
+            animation: zoomIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Flip Animation */
+        @keyframes flip {
+            0% { transform: perspective(400px) rotateY(90deg); opacity: 0; }
+            100% { transform: perspective(400px) rotateY(0); opacity: 1; }
+        }
+
+        .flip-in {
+            animation: flip 0.8s ease-out;
+        }
+
+        /* Shake Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .shake:hover {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Pulse Strong */
+        @keyframes pulseStrong {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+            50% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+
+        .pulse-strong {
+            animation: pulseStrong 2s infinite;
+        }
+
+        /* Neon Glow Pulse */
+        @keyframes neonGlowPulse {
+            0%, 100% { 
+                box-shadow: 0 0 5px #38bdf8, 0 0 10px #38bdf8, 0 0 20px #38bdf8, 0 0 40px #38bdf8;
+            }
+            50% { 
+                box-shadow: 0 0 10px #38bdf8, 0 0 20px #38bdf8, 0 0 40px #38bdf8, 0 0 80px #38bdf8, 0 0 120px #38bdf8;
+            }
+        }
+
+        .neon-glow-pulse {
+            animation: neonGlowPulse 2s ease-in-out infinite;
+        }
+
+        /* Text Glitch Effect */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .text-glitch:hover {
+            animation: glitch 0.3s ease-in-out;
+        }
+
+        /* Rotate 3D - Optimized */
+        @keyframes rotate3D {
+            0% { transform: perspective(1000px) rotateY(0deg); }
+            100% { transform: perspective(1000px) rotateY(360deg); }
+        }
+
+        .rotate-3d {
+            animation: rotate3D 20s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        /* Disable heavy animations on mobile */
+        @media (max-width: 768px) {
+            .rotate-3d {
+                animation: none;
+            }
+            .float-enhanced {
+                animation: none;
+            }
+            .neon-glow-pulse {
+                animation: none;
+            }
+            .rotating-border {
+                animation: none;
+                display: none;
+            }
+            .pulse-strong {
+                animation: none;
+            }
+        }
+
+        /* GPU Acceleration untuk elemen yang sering beranimasi */
+        .rain-drop,
+        .particle,
+        .star,
+        .card-hover,
+        .magnetic-btn,
+        .neon-border {
+            will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* Morph Animation */
+        @keyframes morph {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
+
+        .morph {
+            animation: morph 8s ease-in-out infinite;
+        }
+
+        /* Lightning Effect */
+        @keyframes lightning {
+            0%, 100% { opacity: 0; }
+            10%, 15% { opacity: 1; background: rgba(56, 189, 248, 0.8); }
+            11%, 14% { opacity: 0; }
+        }
+
+        .lightning {
+            animation: lightning 5s infinite;
+        }
+
+        /* Typewriter Effect */
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid #38bdf8;
+            white-space: nowrap;
+            animation: typewriter 4s steps(40) 1s both, blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Slide Up Stagger */
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideUpStagger 0.6s ease-out forwards;
+        }
+
+        @keyframes slideUpStagger {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Heartbeat Animation */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        .heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        /* Water Droplets on Glass Effect */
+        .water-drop {
+            position: absolute;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(56, 189, 248, 0.4) 50%, transparent 70%);
+            border-radius: 50% 50% 50% 70% / 50% 50% 70% 60%;
+            pointer-events: none;
+            animation: dropSlide linear forwards;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5), 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes dropSlide {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.8;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Heavy Rain Effect */
+        .heavy-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: linear-gradient(transparent 0%, rgba(56, 189, 248, 0.03) 50%, transparent 100%);
+        }
+
+        /* Rain Splash Effect */
+        @keyframes splash {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(3) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        .rain-splash {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid rgba(56, 189, 248, 0.6);
+            border-radius: 50%;
+            animation: splash 0.6s ease-out forwards;
+        }
+
+        /* Music Player Styling */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10000;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border: 2px solid #38bdf8;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+        }
+
+        .music-control:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.8);
+        }
+
+        .music-control i {
+            color: #38bdf8;
+            font-size: 24px;
+        }
+
+        @keyframes musicPulse {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(56, 189, 248, 0.9), 0 0 90px rgba(56, 189, 248, 0.6);
+            }
+        }
+
+        .music-playing {
+            animation: musicPulse 2s infinite;
+        }
+
+        /* Fog Effect */
+        @keyframes fog {
+            0% {
+                transform: translateX(-100%) translateY(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateX(100%) translateY(-10vh);
+                opacity: 0;
+            }
+        }
+
+        .fog {
+            position: fixed;
+            width: 200%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            animation: fog 30s linear infinite;
+            z-index: 1;
+        }
+
+        /* Enhanced Glass Effect with Rain Streaks */
+        .glass-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(56, 189, 248, 0.01) 50%,
+                transparent 100%
+            );
+        }
+
+        /* Digital Clock Styling */
+        .digital-clock {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 2px solid #38bdf8;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideInUp 0.5s ease;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            color: #38bdf8;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid rgba(56, 189, 248, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .verify-code-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 2px solid #38bdf8;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .verify-code {
+            font-size: 48px;
+            font-weight: bold;
+            color: #38bdf8;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 8px;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .warning-box i {
+            color: #ef4444;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(56, 189, 248, 0.3);
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-icon {
+            color: #10b981;
+            font-size: 64px;
+            animation: bounceIn 0.8s ease;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            border-radius: 10px;
+            padding: 15px;
+            color: #fca5a5;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
     </style>
 </head>
-<body>
-    <!-- CONTAINER HUJAN -->
-    <div id="rain-container" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></div>
+<body class="relative">
+    <!-- Audio Player -->
+    <audio id="backgroundMusic" loop>
+        <source src="http://g.top4top.io/m_3650prbmn1.mp3" type="audio/mpeg">
+    </audio>
 
-    <!-- NAVBAR -->
-    <nav class="fixed top-0 w-full bg-dark/60 backdrop-blur-md z-50 transition-all duration-300">
+    <!-- Music Control Button -->
+    <div class="music-control" id="musicControl" title="Click to play/pause music">
+        <i class="fa fa-volume-up" id="musicIcon"></i>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Fog Effect -->
+    <div class="fog"></div>
+    <div class="fog" style="animation-delay: 10s; animation-duration: 35s;"></div>
+    <div class="fog" style="animation-delay: 20s; animation-duration: 40s;"></div>
+
+    <!-- Heavy Rain Effect -->
+    <div class="heavy-rain"></div>
+
+    <!-- Glass Overlay with Water Effect -->
+    <div class="glass-overlay" id="glassOverlay"></div>
+
+    <!-- Stars Background -->
+    <div class="stars" id="starsContainer"></div>
+
+    <!-- Rain Container -->
+    <div class="rain-container" id="rainContainer"></div>
+
+    <!-- Particles Background -->
+    <div id="particlesContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Lightning Effect -->
+    <div class="fixed inset-0 pointer-events-none z-0 lightning" id="lightning"></div>
+
+    <!-- Register UCP Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeRegisterModal()">
+                <i class="fa fa-times"></i>
+            </button>
+            
+            <div id="registerForm">
+                <h2 class="text-3xl font-black gradient-text text-center mb-2">REGISTER UCP</h2>
+                <p class="text-white/70 text-center mb-6">Buat akun UCP Lythera Pride Roleplay</p>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="mb-6">
+                        <label class="block text-white mb-2 font-semibold">
+                            <i class="fa fa-user mr-2 text-primary"></i>Username UCP
+                        </label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            class="form-input" 
+                            placeholder="Masukkan username UCP"
+                            required
+                            minlength="3"
+                            maxlength="25"
+                            pattern="[a-zA-Z0-9_]+"
+                            title="Username hanya boleh mengandung huruf, angka, dan underscore"
+                        >
+                        <p class="text-white/50 text-sm mt-2">
+                            <i class="fa fa-info-circle mr-1"></i>
+                            3-25 karakter, hanya huruf, angka, dan underscore
+                        </p>
+                    </div>
+
+                    <div class="glass p-4 rounded-lg mb-6">
+                        <div class="flex items-center gap-3 text-primary mb-2">
+                            <i class="fa fa-shield text-2xl"></i>
+                            <span class="font-bold">Password Otomatis</span>
+                        </div>
+                        <p class="text-white/70 text-sm">
+                            Password akan di-generate secara otomatis menggunakan enkripsi SHA256 dengan salt untuk keamanan maksimal. Anda akan menerima password saat verifikasi berhasil.
+                        </p>
+                    </div>
+
+                    <div class="glass p-4 rounded-lg mb-6">
+                        <div class="flex items-center gap-2 text-white/70 text-sm">
+                            <i class="fa fa-map-marker text-primary"></i>
+                            <span>IP Address Anda: <span id="userIP" class="text-primary font-bold">Detecting...</span></span>
+                        </div>
+                        <p class="text-white/50 text-xs mt-2">
+                            <i class="fa fa-exclamation-triangle mr-1"></i>
+                            Satu IP hanya dapat membuat 1 akun UCP
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="fa fa-user-plus mr-2"></i>
+                        DAFTAR SEKARANG
+                    </button>
+                </form>
+            </div>
+
+            <!-- Verify Code Display -->
+            <div id="verifyCodeDisplay" style="display: none;">
+                <div class="text-center mb-6">
+                    <i class="fa fa-check-circle success-icon"></i>
+                    <h2 class="text-3xl font-black gradient-text mt-4">REGISTRASI BERHASIL!</h2>
+                </div>
+
+                <div class="verify-code-box">
+                    <p class="text-white/70 mb-3">Kode Verifikasi Anda:</p>
+                    <div class="verify-code" id="verifyCode">000000</div>
+                    <button onclick="copyVerifyCode()" class="mt-4 bg-primary/20 hover:bg-primary/30 text-primary px-6 py-2 rounded-full transition-all">
+                        <i class="fa fa-copy mr-2"></i>Copy Code
+                    </button>
+                </div>
+
+                <div class="warning-box">
+                    <div class="flex items-start gap-3">
+                        <i class="fa fa-exclamation-triangle text-2xl"></i>
+                        <div class="text-white/90">
+                            <p class="font-bold mb-2">PENTING - HARAP DIBACA!</p>
+                            <ul class="text-sm space-y-1">
+                                <li>• Harap screenshot verify code ini</li>
+                                <li>• Kode hanya ditampilkan SATU KALI saat registrasi</li>
+                                <li>• Kode tidak dapat ditampilkan lagi setelah ditutup</li>
+                                <li>• Simpan kode ini dengan aman untuk verifikasi akun</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="closeRegisterModal()" class="btn-submit mt-6 bg-gradient-to-r from-green-500 to-green-600">
+                    <i class="fa fa-check mr-2"></i>
+                    SAYA SUDAH SCREENSHOT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full glass z-50 transition-all duration-500" id="navbar">
         <div class="container mx-auto px-4 md:px-6">
-            <div class="flex justify-between items-center py-3 md:py-4">
-                <!-- LOGO -->
-                <div class="flex items-center">
-                    <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462319248754872320/lytherapressss.png?ex=696dc26d&is=696c70ed&hm=56ad4d8506cb132770b630a81fa2fcd82239540d4cfb62d840f7a6fb0b6fe75f&" alt="Lythera Pride Roleplay" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-primary">
-                    <span class="ml-2 text-white font-bold text-lg md:text-xl">
-                        <span class="text-primary">LYTHERA</span> <span class="hidden sm:inline">PRIDE</span>
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-3 animate-slide-down">
+                    <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462319248754872320/lytherapressss.png?ex=696dc26d&is=696c70ed&hm=56ad4d8506cb132770b630a81fa2fcd82239540d4cfb62d840f7a6fb0b6fe75f&" alt="Logo" class="w-12 h-12 rounded-full border-2 border-primary animate-pulse-glow">
+                    <span class="text-2xl font-black">
+                        <span class="gradient-text">LYTHERA</span>
+                        <span class="text-white ml-1">PRIDE</span>
                     </span>
                 </div>
 
-                <!-- MENU DESKTOP -->
-                <div class="hidden md:flex items-center gap-6 md:gap-8">
-                    <a href="#about" class="text-white hover:text-primary transition-colors text-sm md:text-base">TENTANG</a>
-                    <a href="#features" class="text-white hover:text-primary transition-colors text-sm md:text-base">FITUR</a>
-                    <a href="https://sa-mp.co.id/" class="text-white hover:text-primary transition-colors text-sm md:text-base">DOWNLOAD</a>
-                    <a href="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" class="text-white hover:text-primary transition-colors text-sm md:text-base">GALERI</a>
-                    <a href="#rules" class="text-white hover:text-primary transition-colors text-sm md:text-base">PERATURAN</a>
-                    <a href="https://discord.gg/rRZ9MRpN8P" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full font-medium transition-all hover:shadow-lg hover:shadow-primary/40">MASUK</a>
+                <div class="hidden md:flex items-center space-x-8 animate-slide-down" style="animation-delay: 0.2s;">
+                    <a href="#home" class="text-white hover:text-primary transition-all duration-300 font-medium relative group">
+                        HOME
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#about" class="text-white hover:text-primary transition-all duration-300 font-medium relative group">
+                        TENTANG
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#features" class="text-white hover:text-primary transition-all duration-300 font-medium relative group">
+                        FITUR
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="#download" class="text-white hover:text-primary transition-all duration-300 font-medium relative group">
+                        DOWNLOAD
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                    <a href="https://discord.gg/rRZ9MRpN8P" class="magnetic-btn bg-gradient-to-r from-primary to-secondary text-white px-6 py-2.5 rounded-full font-bold hover:shadow-2xl hover:shadow-primary/50 ripple">
+                        <i class="fab fa-discord mr-2"></i>JOIN NOW
+                    </a>
                 </div>
 
-                <!-- MENU MOBILE -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-white text-2xl">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </div>
+                <button id="mobileMenuBtn" class="md:hidden text-white text-2xl animate-scale-in">
+                    <i class="fa fa-bars"></i>
+                </button>
             </div>
         </div>
 
-        <!-- MOBILE MENU DROPDOWN -->
-        <div id="mobile-menu" class="md:hidden bg-dark/95 backdrop-blur-md hidden px-4 py-3">
-            <div class="flex flex-col gap-4">
-                <a href="#about" class="text-white hover:text-primary transition-colors py-2">TENTANG</a>
-                <a href="#features" class="text-white hover:text-primary transition-colors py-2">FITUR</a>
-                <a href="https://sa-mp.co.id/" class="text-white hover:text-primary transition-colors py-2">DOWNLOAD</a>
-                <a href="#gallery" class="text-white hover:text-primary transition-colors py-2">GALERI</a>
-                <a href="#rules" class="text-white hover:text-primary transition-colors py-2">PERATURAN</a>
-                <a href="https://discord.gg/rRZ9MRpN8P" class="bg-primary text-white px-4 py-2 rounded-full font-medium text-center">MASUK</a>
+        <div id="mobileMenu" class="md:hidden glass hidden">
+            <div class="container mx-auto px-4 py-6 space-y-4">
+                <a href="#home" class="block text-white hover:text-primary transition-colors py-2 font-medium">HOME</a>
+                <a href="#about" class="block text-white hover:text-primary transition-colors py-2 font-medium">TENTANG</a>
+                <a href="#features" class="block text-white hover:text-primary transition-colors py-2 font-medium">FITUR</a>
+                <a href="#download" class="block text-white hover:text-primary transition-colors py-2 font-medium">DOWNLOAD</a>
+                <a href="https://discord.gg/rRZ9MRpN8P" class="block bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-full font-bold text-center">
+                    <i class="fab fa-discord mr-2"></i>JOIN DISCORD
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section class="relative min-h-screen flex items-center overflow-hidden">
-        <div class="absolute inset-0 bg-overlay z-10"></div>
-        <div class="container mx-auto px-4 md:px-6 relative z-20 py-20">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div class="animate-fade-down">
-                    <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-tight hero-text-shadow">
-                        <span class="text-primary block">LYTHERA</span>
-                        <span class="text-white">PRIDE</span>
-                        <span class="text-primary/90 block text-[clamp(1.8rem,4vw,3rem)]">ROLEPLAY</span>
-                    </h1>
-                    <p class="text-white/90 text-lg md:text-xl mt-4 max-w-xl">
-                        Tempat di mana cerita hidupmu dimulai - Rasakan petualangan roleplay yang realistis dan tak terlupakan di tengah hujan kota!
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-darker/50 to-darker z-10"></div>
+        
+        <div class="container mx-auto px-4 md:px-6 relative z-20 py-32">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-left">
+                    <div class="slide-in-left">
+                        <h1 class="text-7xl md:text-8xl font-black mb-6 leading-tight">
+                            <span class="block glow-text gradient-text text-glitch pulse-strong">LYTHERA</span>
+                            <span class="block text-white bounce-in-enhanced">PRIDE</span>
+                            <span class="block text-5xl md:text-6xl mt-2 text-primary/80 zoom-in">ROLEPLAY</span>
+                        </h1>
+                    </div>
+                    
+                    <p class="text-xl md:text-2xl text-white/90 mb-8 slide-in-right" style="animation-delay: 0.3s;">
+                        Tempat di mana cerita hidupmu dimulai - Rasakan petualangan roleplay yang realistis dan tak terlupakan!
                     </p>
-                    <div class="flex flex-wrap gap-4 mt-8">
-                        <a href="https://sa-mp.co.id/" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-semibold transition-all hover:shadow-xl hover:shadow-primary/30">
-                            <i class="fa fa-download mr-2"></i> UNDUH SEKARANG
+
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start mb-12 flip-in" style="animation-delay: 0.5s;">
+                        <a href="https://sa-mp.co.id/" class="magnetic-btn neon-border glass px-8 py-4 rounded-full font-bold text-white hover:scale-110 transition-all ripple group neon-glow-pulse shake">
+                            <i class="fa fa-download mr-2 group-hover:animate-bounce heartbeat"></i>
+                            DOWNLOAD NOW
                         </a>
-                        <a href="https://discord.gg/rRZ9MRpN8P" class="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-full font-semibold transition-all">
-                            <i class="fab fa-discord mr-2"></i> GABUNG DISCORD
+                        <button onclick="openRegisterModal()" class="magnetic-btn glass border-2 border-primary px-8 py-4 rounded-full font-bold text-primary hover:bg-primary hover:text-white transition-all ripple shake">
+                            <i class="fa fa-user-plus mr-2"></i>
+                            REGISTER UCP
+                        </button>
+                        <a href="https://discord.gg/rRZ9MRpN8P" class="magnetic-btn glass border-2 border-primary px-8 py-4 rounded-full font-bold text-primary hover:bg-primary hover:text-white transition-all ripple shake">
+                            <i class="fab fa-discord mr-2"></i>
+                            JOIN DISCORD
                         </a>
                     </div>
-                    <div class="flex items-center gap-6 mt-8">
-                        <div class="flex -space-x-2">
-                            <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462393381811650661/1111-removebg-preview.png?ex=696e0778&is=696cb5f8&hm=7f51d2bbcf4c301aa23b20d5f04ab72e660eb6630277e180f5864ccce24e7ed4&" alt="Player" class="w-20 h-30 rounded-full border-20 border-dark">
+
+                    <div class="glass p-6 rounded-2xl inline-flex items-center gap-6 zoom-in pulse-strong" style="animation-delay: 0.7s;">
+                        <div class="flex items-center gap-3">
+                            <i class="fa fa-clock text-3xl text-primary animate-pulse"></i>
                         </div>
-                        <div class="text-white">
-                            <span class="text-primary font-bold text-xl" id="online-count">187</span>
-                            <span class="text-white/80"> Pemain Online</span>
+                        <div>
+                            <div class="text-2xl md:text-3xl font-black gradient-text digital-clock bounce-in-enhanced" id="realTimeClock">
+                                00:00:00
+                            </div>
+                            <div class="text-white/70 font-medium" id="realTimeDate">Loading...</div>
                         </div>
                     </div>
                 </div>
-                <div class="hidden lg:block animate-scale-in">
-                    <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Lythera Pride Roleplay" class="w-full max-w-md mx-auto rounded-full border-4 border-primary/30 float-animation hover-scale shadow-2xl shadow-primary/20">
+
+                <div class="hidden lg:block zoom-in rotate-3d" style="animation-delay: 0.4s;">
+                    <div class="relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-3xl opacity-30 animate-pulse morph"></div>
+                        <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Lythera" class="relative w-full max-w-lg mx-auto rounded-full neon-border float-enhanced hover:scale-110 transition-all duration-500 neon-glow-pulse">
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 heartbeat">
+            <a href="#about" class="text-primary text-4xl pulse-strong">
+                <i class="fa fa-chevron-down"></i>
+            </a>
+        </div>
+
+        <div class="wave"></div>
     </section>
 
-    <!-- ABOUT SECTION -->
-    <section id="about" class="py-20 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">TENTANG SERVER</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Lythera Pride Roleplay adalah server roleplay dengan fokus pada cerita yang mendalam, komunitas yang ramah, dan pengalaman bermain yang tak terlupakan.
+    <!-- About Section -->
+    <section id="about" class="relative py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-darker to-dark"></div>
+        
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-6xl font-black gradient-text mb-6">TENTANG KAMI</h2>
+                <div class="w-32 h-2 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full"></div>
+                <p class="text-xl text-white/80 max-w-3xl mx-auto mt-8">
+                    Server roleplay terbaik dengan komunitas yang ramah dan pengalaman bermain yang tak terlupakan
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="animate-fade-up delay-100">
-                    <div class="grid grid-cols-2 gap-3">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390344992948224/mechanic.jpg?ex=696e04a4&is=696cb324&hm=10fbb17eeb95d2f119fedeece79b324b123f7c4dbd08e6874ad001e169306824&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390345307394144/badside.jpg?ex=696e04a4&is=696cb324&hm=bb4729a5e23b460b3a8b195b92dfd10ca4eae9e83f73dcf61fe40c0562a43611&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow mt-6">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390345651322944/company.jpg?ex=696e04a4&is=696cb324&hm=db12d3e551a01d2e59c4e50ebe6c2b767d573cc51578de1ef11a8584b0e4794a&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390346011901972/faction.jpg?ex=696e04a4&is=696cb324&hm=411c5da4215678ec2759ce1105ebedeceb6ba15ee77359b5e0ff27d16a00995f&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow mt-6">
-                    </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390344992948224/mechanic.jpg?ex=696e04a4&is=696cb324&hm=10fbb17eeb95d2f119fedeece79b324b123f7c4dbd08e6874ad001e169306824&=&format=webp&width=668&height=668" alt="Screenshot" class="rounded-2xl card-hover shadow-2xl">
+                    <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390345307394144/badside.jpg?ex=696e04a4&is=696cb324&hm=bb4729a5e23b460b3a8b195b92dfd10ca4eae9e83f73dcf61fe40c0562a43611&=&format=webp&width=668&height=668" alt="Screenshot" class="rounded-2xl card-hover shadow-2xl mt-8">
+                    <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390345651322944/company.jpg?ex=696e04a4&is=696cb324&hm=db12d3e551a01d2e59c4e50ebe6c2b767d573cc51578de1ef11a8584b0e4794a&=&format=webp&width=668&height=668" alt="Screenshot" class="rounded-2xl card-hover shadow-2xl">
+                    <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390346011901972/faction.jpg?ex=696e04a4&is=696cb324&hm=411c5da4215678ec2759ce1105ebedeceb6ba15ee77359b5e0ff27d16a00995f&=&format=webp&width=668&height=668" alt="Screenshot" class="rounded-2xl card-hover shadow-2xl mt-8">
                 </div>
 
-                <div class="animate-fade-up delay-200">
-                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-6">
-                        Dunia <span class="text-primary">Lythera</span> yang Mengagumkan
+                <div class="space-y-8">
+                    <h3 class="text-4xl font-bold text-white mb-6">
+                        Dunia <span class="gradient-text">Lythera</span> yang Menakjubkan
                     </h3>
-                    <p class="text-white/80 mb-6">
-                        Didirikan pada tahun 2023, Lythera Pride Roleplay telah berkembang menjadi salah satu server roleplay terkemuka dengan ribuan pemain aktif setiap hari. Dikelola oleh tim profesional dengan pengalaman bertahun-tahun dalam industri game.
+                    
+                    <p class="text-lg text-white/80 leading-relaxed">
+                        Sejak 2023, Lythera Pride Roleplay telah menjadi rumah bagi ribuan pemain yang mencari pengalaman roleplay autentik dengan sistem yang inovatif dan komunitas yang solid.
                     </p>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Sistem Roleplay Realistis</h4>
-                                <p class="text-white/70">Struktur roleplay yang terorganisir dengan aturan yang jelas dan adil.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Event Mingguan Seru</h4>
-                                <p class="text-white/70">Event khusus setiap minggu yang menghibur dan memberikan hadiah menarik.</p>
+
+                    <div class="space-y-6">
+                        <div class="glass p-6 rounded-2xl card-hover">
+                            <div class="flex items-start gap-4">
+                                <div class="neon-border glass p-3 rounded-full">
+                                    <i class="fa fa-check text-primary text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-white mb-2">Sistem Roleplay Realistis</h4>
+                                    <p class="text-white/70">Struktur roleplay terorganisir dengan aturan jelas dan adil untuk pengalaman terbaik</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Tim Admin Profesional</h4>
-                                <p class="text-white/70">Admin yang responsif dan siap membantu pemain kapan saja.</p>
+
+                        <div class="glass p-6 rounded-2xl card-hover">
+                            <div class="flex items-start gap-4">
+                                <div class="neon-border glass p-3 rounded-full">
+                                    <i class="fa fa-calendar text-primary text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-white mb-2">Event Mingguan Seru</h4>
+                                    <p class="text-white/70">Event khusus setiap minggu dengan hadiah menarik dan kesempatan unik</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Update Konten Berkala</h4>
-                                <p class="text-white/70">Konten baru dan perbaikan sistem secara teratur untuk pengalaman terbaik.</p>
+
+                        <div class="glass p-6 rounded-2xl card-hover">
+                            <div class="flex items-start gap-4">
+                                <div class="neon-border glass p-3 rounded-full">
+                                    <i class="fa fa-users text-primary text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold text-white mb-2">Tim Admin Profesional</h4>
+                                    <p class="text-white/70">Admin responsif yang siap membantu pemain 24/7 dengan dedikasi penuh</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <a href="#features" class="inline-block mt-8 bg-primary/10 hover:bg-primary/20 text-primary px-5 py-2 rounded-full font-medium transition-all">
-                        Lihat Fitur Lengkap <i class="fa fa-arrow-right ml-2"></i>
-                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FEATURES SECTION -->
-    <section id="features" class="py-20 bg-dark/50 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">FITUR UNGGULAN</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Nikmati berbagai fitur canggih yang membuat pengalaman roleplay kamu semakin seru dan menyenangkan.
+    <!-- Features Section -->
+    <section id="features" class="relative py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark to-darker"></div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-6xl font-black gradient-text mb-6">FITUR UNGGULAN</h2>
+                <div class="w-32 h-2 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full"></div>
+                <p class="text-xl text-white/80 max-w-3xl mx-auto mt-8">
+                    Fitur canggih yang membuat pengalaman roleplay kamu semakin seru dan menyenangkan
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- FEATURE 1 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-map-marker text-3xl text-primary"></i>
+                <div class="glass neon-border p-8 rounded-3xl card-hover group stagger-item">
+                    <div class="relative">
+                        <div class="rotating-border"></div>
+                        <div class="neon-border glass w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-all rotate-3d pulse-strong">
+                            <i class="fa fa-map-marker text-4xl gradient-text"></i>
+                        </div>
                     </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">PETA YANG LUAS</h3>
-                    <p class="text-white/70">
-                        Lanskap yang beragam mulai dari kota modern, pedesaan hijau, hingga pantai yang indah - semua dirancang dengan detail tinggi dan realistis.
+                    <h3 class="text-2xl font-bold text-white mb-4 text-glitch">PETA LUAS</h3>
+                    <p class="text-white/70 leading-relaxed">
+                        Jelajahi lanskap beragam dari kota modern hingga pantai indah dengan detail tinggi dan realistis
                     </p>
                 </div>
 
-                <!-- FEATURE 2 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-100">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-users text-3xl text-primary"></i>
+                <div class="glass neon-border p-8 rounded-3xl card-hover group stagger-item">
+                    <div class="relative">
+                        <div class="rotating-border"></div>
+                        <div class="neon-border glass w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-all rotate-3d pulse-strong">
+                            <i class="fa fa-users text-4xl gradient-text"></i>
+                        </div>
                     </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">KOMUNITAS RAMAH</h3>
-                    <p class="text-white/70">
-                        Komunitas yang terdiri dari pemain dengan berbagai latar belakang, semua bersatu dengan cinta terhadap roleplay dan saling menghargai.
+                    <h3 class="text-2xl font-bold text-white mb-4 text-glitch">KOMUNITAS RAMAH</h3>
+                    <p class="text-white/70 leading-relaxed">
+                        Bergabung dengan komunitas pemain yang ramah, saling menghargai, dan berbagi passion yang sama
                     </p>
                 </div>
 
-                <!-- FEATURE 3 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-200">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-cogs text-3xl text-primary"></i>
+                <div class="glass neon-border p-8 rounded-3xl card-hover group stagger-item">
+                    <div class="relative">
+                        <div class="rotating-border"></div>
+                        <div class="neon-border glass w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-all rotate-3d pulse-strong">
+                            <i class="fa fa-cogs text-4xl gradient-text"></i>
+                        </div>
                     </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">SISTEM TERBARU</h3>
-                    <p class="text-white/70">
-                        Dilengkapi dengan sistem-sistem terbaru seperti ekonomi realistis, pekerjaan beragam, transportasi modern, dan interaksi sosial yang kaya.
+                    <h3 class="text-2xl font-bold text-white mb-4 text-glitch">SISTEM TERBARU</h3>
+                    <p class="text-white/70 leading-relaxed">
+                        Nikmati sistem ekonomi realistis, pekerjaan beragam, dan interaksi sosial yang kaya
                     </p>
                 </div>
 
-                <!-- FEATURE 4 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-300">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-briefcase text-3xl text-primary"></i>
+                <div class="glass neon-border p-8 rounded-3xl card-hover group stagger-item">
+                    <div class="relative">
+                        <div class="rotating-border"></div>
+                        <div class="neon-border glass w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-all rotate-3d pulse-strong">
+                            <i class="fa fa-briefcase text-4xl gradient-text"></i>
+                        </div>
                     </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">PEKERJAAN BERAGAM</h3>
-                    <p class="text-white/70">
-                        Lebih dari 50 jenis pekerjaan yang bisa kamu pilih mulai dari pekerja biasa hingga profesi khusus dengan karir yang jelas dan menguntungkan.
+                    <h3 class="text-2xl font-bold text-white mb-4 text-glitch">PEKERJAAN BERAGAM</h3>
+                    <p class="text-white/70 leading-relaxed">
+                        Pilih dari 50+ jenis pekerjaan dengan karir jelas dan sistem penghasilan yang menguntungkan
                     </p>
                 </div>
 
-                <!-- FEATURE 5 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-400">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-gavel text-3xl text-primary"></i>
+                <div class="glass neon-border p-8 rounded-3xl card-hover group stagger-item">
+                    <div class="relative">
+                        <div class="rotating-border"></div>
+                        <div class="neon-border glass w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-all rotate-3d pulse-strong">
+                            <i class="fa fa-gavel text-4xl gradient-text"></i>
+                        </div>
                     </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">SISTEM HUKUM ADIL</h3>
-                    <p class="text-white/70">
-                        Sistem hukum yang realistis dengan polisi profesional, pengadilan yang adil, dan konsekuensi yang jelas untuk setiap pelanggaran aturan.
+                    <h3 class="text-2xl font-bold text-white mb-4 text-glitch">SISTEM HUKUM ADIL</h3>
+                    <p class="text-white/70 leading-relaxed">
+                        Sistem hukum realistis dengan polisi profesional dan pengadilan yang adil untuk semua
                     </p>
                 </div>
 
-                <!-- FEATURE 6 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-500">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-gift text-3xl text-primary"></i>
+                <div class="glass neon-border p-8 rounded-3xl card-hover group stagger-item">
+                    <div class="relative">
+                        <div class="rotating-border"></div>
+                        <div class="neon-border glass w-20 h-20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-all rotate-3d pulse-strong">
+                            <i class="fa fa-gift text-4xl gradient-text"></i>
+                        </div>
                     </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">EVENT MENARIK</h3>
-                    <p class="text-white/70">
-                        Event mingguan yang menghibur mulai dari balapan mobil, lomba musik, festival budaya, hingga misi khusus yang hanya ada di Lythera!
+                    <h3 class="text-2xl font-bold text-white mb-4 text-glitch">EVENT MENARIK</h3>
+                    <p class="text-white/70 leading-relaxed">
+                        Event mingguan yang menghibur dari balapan mobil hingga misi khusus yang hanya ada di Lythera
                     </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- DOWNLOAD SECTION -->
-    <section id="download" class="py-20 bg-dark/50 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">MULAI BERMAIN</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Ikuti langkah mudah ini untuk bergabung dengan komunitas kami dan mulai petualanganmu di dunia Lythera!
+    <!-- Download Section -->
+    <section id="download" class="relative py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-darker to-dark"></div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-6xl font-black gradient-text mb-6">MULAI BERMAIN</h2>
+                <div class="w-32 h-2 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full"></div>
+                <p class="text-xl text-white/80 max-w-3xl mx-auto mt-8">
+                    Ikuti langkah mudah ini untuk bergabung dan mulai petualanganmu di dunia Lythera
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="animate-fade-up">
-                    <div class="space-y-8">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">1</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">UNDUH LAUNCHER</h3>
-                                <p class="text-white/70 mt-1">Klik tombol di samping untuk mengunduh launcher resmi Lythera Pride Roleplay yang aman dan terpercaya.</p>
-                            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="space-y-8">
+                    <div class="glass p-6 rounded-2xl card-hover flex items-center gap-6">
+                        <div class="neon-border glass w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black gradient-text flex-shrink-0">
+                            1
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">2</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">DAFTAR AKUN</h3>
-                                <p class="text-white/70 mt-1">Buat akunmu melalui launcher atau melalui halaman registrasi di Discord kami dengan mudah dan cepat.</p>
-                            </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">UNDUH LAUNCHER</h3>
+                            <p class="text-white/70">Download launcher resmi Lythera Pride Roleplay yang aman dan terpercaya</p>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">3</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">BACA PERATURAN</h3>
-                                <p class="text-white/70 mt-1">Pelajari peraturan server agar pengalaman bermainmu lebih menyenangkan dan terhindar dari masalah yang tidak diinginkan.</p>
-                            </div>
+                    </div>
+
+                    <div class="glass p-6 rounded-2xl card-hover flex items-center gap-6">
+                        <div class="neon-border glass w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black gradient-text flex-shrink-0">
+                            2
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">4</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">MULAI BERMAIN</h3>
-                                <p class="text-white/70 mt-1">Hubungkan diri ke server dan mulailah petualanganmu di dunia Lythera dengan membuat karakter dan cerita kamu sendiri!</p>
-                            </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">DAFTAR AKUN</h3>
+                            <p class="text-white/70">Buat akunmu melalui launcher atau Discord dengan mudah dan cepat</p>
+                        </div>
+                    </div>
+
+                    <div class="glass p-6 rounded-2xl card-hover flex items-center gap-6">
+                        <div class="neon-border glass w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black gradient-text flex-shrink-0">
+                            3
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">BACA PERATURAN</h3>
+                            <p class="text-white/70">Pelajari peraturan server agar pengalaman bermainmu lebih menyenangkan</p>
+                        </div>
+                    </div>
+
+                    <div class="glass p-6 rounded-2xl card-hover flex items-center gap-6">
+                        <div class="neon-border glass w-16 h-16 rounded-full flex items-center justify-center text-3xl font-black gradient-text flex-shrink-0">
+                            4
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">MULAI BERMAIN</h3>
+                            <p class="text-white/70">Hubungkan ke server dan mulai petualanganmu dengan karakter impianmu</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="animate-fade-up delay-100">
-                    <div class="bg-dark/60 backdrop-blur-md rounded-2xl p-8 border border-primary/30 card-glow">
-                        <div class="text-center mb-6">
-                            <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Launcher Icon" class="w-20 h-20 mx-auto rounded-full border-2 border-primary">
-                            <h3 class="text-white text-2xl font-bold mt-4">UNDUH SEKARANG</h3>
-                            <p class="text-white/70 mt-2">Launcher berukuran sekitar 5GB dengan total data server 45GB</p>
-                            <div class="flex justify-center gap-2 mt-4">
-                                <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Latest Version</span>
-                                <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Support in server</span>
-                            </div>
+                <div class="glass neon-border p-10 rounded-3xl">
+                    <div class="text-center mb-8">
+                        <div class="relative inline-block">
+                            <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-2xl opacity-50 animate-pulse"></div>
+                            <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Launcher" class="relative w-24 h-24 rounded-full neon-border">
                         </div>
+                        <h3 class="text-3xl font-black text-white mt-6 mb-3">UNDUH SEKARANG</h3>
+                        <p class="text-white/70 mb-4">Launcher ~5GB | Total Server ~45GB</p>
+                        <div class="flex flex-wrap justify-center gap-3">
+                            <span class="glass px-4 py-2 rounded-full text-primary font-semibold text-sm">Latest Version</span>
+                            <span class="glass px-4 py-2 rounded-full text-primary font-semibold text-sm">24/7 Support</span>
+                        </div>
+                    </div>
 
-                        <div class="space-y-4">
-                            <a href="https://sa-mp.co.id/" class="block w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10 text-center px-6 py-3 rounded-full font-semibold transition-all">
-                                <i class="fa fa-download mr-2"></i> UNDUH LAUNCHER (PC)
-                            </a>
-                            <a href="https://sa-mp.co.id/" class="block w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10 text-center px-6 py-3 rounded-full font-semibold transition-all">
-                                <i class="fa fa-file-text-o mr-2"></i> UNDUH LAUNCHER (ANDROID)
-                            </a>
-                        </div>
+                    <div class="space-y-4 mb-8">
+                        <a href="https://sa-mp.co.id/" class="magnetic-btn neon-border glass block text-center px-8 py-4 rounded-full font-bold text-white hover:scale-105 transition-all ripple group">
+                            <i class="fa fa-download mr-2 group-hover:animate-bounce"></i>
+                            DOWNLOAD LAUNCHER (PC)
+                        </a>
+                        <a href="https://sa-mp.co.id/" class="magnetic-btn neon-border glass block text-center px-8 py-4 rounded-full font-bold text-white hover:scale-105 transition-all ripple group">
+                            <i class="fa fa-mobile mr-2 group-hover:animate-bounce"></i>
+                            DOWNLOAD LAUNCHER (ANDROID)
+                        </a>
+                    </div>
 
-                        <div class="mt-8 text-center">
-                            <p class="text-white/80 mb-3">Atau bergabung dengan Discord kami untuk informasi terbaru:</p>
-                            <a href="#" class="inline-block bg-[#5865F2] hover:bg-[#5865F2]/90 text-white px-6 py-2 rounded-full font-semibold transition-all hover:shadow-xl hover:shadow-[#5865F2]/30">
-                                <i class="fab fa-discord mr-2"></i> JOIN DISCORD KAMI
-                            </a>
-                        </div>
+                    <div class="text-center pt-6 border-t border-white/10">
+                        <p class="text-white/70 mb-4">Atau bergabung dengan Discord untuk info terbaru:</p>
+                        <a href="https://discord.gg/rRZ9MRpN8P" class="magnetic-btn bg-[#5865F2] hover:bg-[#5865F2]/90 text-white px-8 py-4 rounded-full font-bold inline-flex items-center hover:scale-105 transition-all shadow-2xl shadow-[#5865F2]/30 ripple">
+                            <i class="fab fa-discord mr-2 text-xl"></i>
+                            JOIN DISCORD SERVER
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- RULES SECTION -->
-    <section id="rules" class="py-20 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">PERATURAN SERVER</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Peraturan ini dibuat untuk menjaga kenyamanan dan kesenangan semua pemain dalam bermain di server kami.
+    <!-- Rules Section -->
+    <section id="rules" class="relative py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark to-darker"></div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-6xl font-black gradient-text mb-6">PERATURAN SERVER</h2>
+                <div class="w-32 h-2 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full"></div>
+                <p class="text-xl text-white/80 max-w-3xl mx-auto mt-8">
+                    Peraturan ini dibuat untuk menjaga kenyamanan dan kesenangan semua pemain
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-up delay-100">
-<div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 card-glow">
-                    <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
-                        <i class="fa fa-exclamation-circle text-primary mr-2"></i> PERATURAN UMUM
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass neon-border p-8 rounded-3xl card-hover">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fa fa-exclamation-circle gradient-text mr-3 text-3xl"></i>
+                        PERATURAN UMUM
                     </h3>
-                    <ul class="space-y-3 text-white/80">
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan menggunakan cheat, hack, atau program ilegal lainnya untuk mendapatkan keuntungan yang tidak adil.</span>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Tidak diperbolehkan menggunakan cheat, hack, atau program ilegal untuk keuntungan tidak adil</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan melakukan spam chat, iklan tidak relevan, atau mengganggu pemain lain.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Tidak diperbolehkan melakukan spam chat, iklan tidak relevan, atau mengganggu pemain lain</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan menggunakan bahasa kasar, ujaran kebencian, atau melakukan pelecehan terhadap pemain lain.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Tidak diperbolehkan menggunakan bahasa kasar, ujaran kebencian, atau pelecehan</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan menyebarkan konten negatif, pornografi, atau konten yang melanggar hukum.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Tidak diperbolehkan menyebarkan konten negatif, pornografi, atau melanggar hukum</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Harap menghormati admin dan semua pemain tanpa memandang latar belakang atau preferensi pribadi.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Harap menghormati admin dan semua pemain tanpa memandang latar belakang</span>
                         </li>
                     </ul>
                 </div>
 
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 card-glow">
-                    <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
-                        <i class="fa fa-book text-primary mr-2"></i> PERATURAN ROLEPLAY
+                <div class="glass neon-border p-8 rounded-3xl card-hover">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fa fa-book gradient-text mr-3 text-3xl"></i>
+                        PERATURAN ROLEPLAY
                     </h3>
-                    <ul class="space-y-3 text-white/80">
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Selalu main dengan gaya roleplay yang realistis dan sesuai dengan dunia Lythera.</span>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Selalu main dengan gaya roleplay yang realistis dan sesuai dunia Lythera</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan melakukan "Powergaming" atau "Metagaming" yang merusak keseruan roleplay.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Tidak diperbolehkan Powergaming atau Metagaming yang merusak keseruan roleplay</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Semua aksi dalam roleplay harus sesuai dengan karakter yang kamu mainkan.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Semua aksi dalam roleplay harus sesuai dengan karakter yang kamu mainkan</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan membunuh pemain lain tanpa alasan yang jelas dalam roleplay (Deathmatch).</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Tidak diperbolehkan membunuh pemain tanpa alasan jelas (Deathmatch)</span>
                         </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Harap menggunakan bahasa Indonesia yang baik dan benar dalam chat roleplay.</span>
+                        <li class="flex items-start gap-4 text-white/80">
+                            <i class="fa fa-check-circle text-primary text-xl mt-1 flex-shrink-0"></i>
+                            <span>Harap menggunakan bahasa Indonesia yang baik dan benar dalam chat roleplay</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="text-center mt-10 animate-fade-up delay-200">
-                <a href="#" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-semibold transition-all hover:shadow-xl hover:shadow-primary/30">
-                    <i class="fa fa-file-text-o mr-2"></i> KEMBALI KE ATAS
+            <div class="text-center mt-12">
+                <a href="#home" class="magnetic-btn neon-border glass px-8 py-4 rounded-full font-bold text-white inline-flex items-center hover:scale-105 transition-all ripple">
+                    <i class="fa fa-arrow-up mr-2"></i>
+                    KEMBALI KE ATAS
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-dark py-12 border-t border-primary/20 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden border-t border-primary/20">
+        <div class="absolute inset-0 bg-gradient-to-b from-darker to-dark"></div>
+
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
                 <div>
-                    <div class="flex items-center mb-4">
-                        <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Lythera Pride Roleplay" class="w-10 h-10 rounded-full border-2 border-primary">
-                        <span class="ml-2 text-white font-bold text-xl">
-                            <span class="text-primary">LYTHERA</span> PRIDE
+                    <div class="flex items-center mb-6">
+                        <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Logo" class="w-12 h-12 rounded-full neon-border">
+                        <span class="ml-3 text-xl font-black">
+                            <span class="gradient-text">LYTHERA</span>
+                            <span class="text-white ml-1">PRIDE</span>
                         </span>
                     </div>
-                    <p class="text-white/70 mb-4">
-                        Tempat di mana cerita hidupmu dimulai - Rasakan petualangan roleplay tak terlupakan di tengah hujan kota!
+                    <p class="text-white/70 mb-6 leading-relaxed">
+                        Tempat di mana cerita hidupmu dimulai - Rasakan petualangan roleplay tak terlupakan!
                     </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-discord"></i>
+                    <div class="flex gap-3">
+                        <a href="https://discord.gg/rRZ9MRpN8P" class="neon-border glass w-12 h-12 rounded-full flex items-center justify-center text-primary hover:scale-110 transition-all">
+                            <i class="fab fa-discord text-xl"></i>
                         </a>
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-instagram"></i>
+                        <a href="#" class="neon-border glass w-12 h-12 rounded-full flex items-center justify-center text-primary hover:scale-110 transition-all">
+                            <i class="fab fa-instagram text-xl"></i>
                         </a>
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-youtube"></i>
+                        <a href="#" class="neon-border glass w-12 h-12 rounded-full flex items-center justify-center text-primary hover:scale-110 transition-all">
+                            <i class="fab fa-youtube text-xl"></i>
                         </a>
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-twitter"></i>
+                        <a href="#" class="neon-border glass w-12 h-12 rounded-full flex items-center justify-center text-primary hover:scale-110 transition-all">
+                            <i class="fab fa-twitter text-xl"></i>
                         </a>
                     </div>
                 </div>
 
                 <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">LINK CEPAT</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#about" class="text-white/70 hover:text-primary transition-colors">Tentang Kami</a></li>
-                        <li><a href="#features" class="text-white/70 hover:text-primary transition-colors">Fitur Server</a></li>
-                        <li><a href="#download" class="text-white/70 hover:text-primary transition-colors">Download Launcher</a></li>
-                        <li><a href="#rules" class="text-white/70 hover:text-primary transition-colors">Peraturan Server</a></li>
+                    <h3 class="text-xl font-bold text-white mb-6">LINK CEPAT</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#about" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Tentang Kami</a></li>
+                        <li><a href="#features" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Fitur Server</a></li>
+                        <li><a href="#download" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Download Launcher</a></li>
+                        <li><a href="#rules" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Peraturan Server</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">DUKUNGAN</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Pusat Bantuan</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Buat Tiket</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Panduan Bermain</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Laporkan Masalah</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Hubungi Kami</a></li>
+                    <h3 class="text-xl font-bold text-white mb-6">DUKUNGAN</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Pusat Bantuan</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Buat Tiket</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Panduan Bermain</a></li>
+                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors hover:translate-x-2 inline-block">→ Laporkan Masalah</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">KONTAK KAMI</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-envelope text-primary mt-1"></i>
-                            <span>support@lytherapriderp.id</span>
+                    <h3 class="text-xl font-bold text-white mb-6">KONTAK KAMI</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-white/70">
+                            <i class="fa fa-envelope text-primary"></i>
+                            <span class="text-sm">support@lytherapriderp.id</span>
                         </li>
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-map-marker text-primary mt-1"></i>
-                            <span>Indonesia-Asia/Jakarta</span>
+                        <li class="flex items-center gap-3 text-white/70">
+                            <i class="fa fa-map-marker text-primary"></i>
+                            <span class="text-sm">Indonesia - Asia/Jakarta</span>
                         </li>
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-clock-o text-primary mt-1"></i>
-                            <span>Server Aktif 24 Jam Nonstop</span>
+                        <li class="flex items-center gap-3 text-white/70">
+                            <i class="fa fa-clock text-primary"></i>
+                            <span class="text-sm">Server 24/7 Nonstop</span>
                         </li>
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-users text-primary mt-1"></i>
-                            <span>Total Pemain: 12.890+</span>
+                        <li class="flex items-center gap-3 text-white/70">
+                            <i class="fa fa-users text-primary"></i>
+                            <span class="text-sm">Total: 12,890+ Players</span>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-t border-primary/10 pt-8 text-center">
-                <p class="text-white/60">
-                    &copy; <?php echo date("Y"); ?> Lythera Pride Roleplay. Semua Hak Dilindungi.
+            <div class="border-t border-primary/20 pt-8 text-center">
+                <p class="text-white/60 mb-2">
+                    © 2026 Lythera Pride Roleplay. All Rights Reserved.
                 </p>
-                <p class="text-white/50 text-sm mt-2">
-                    Dibuat dengan ❤ untuk komunitas roleplay terbaik di Indonesia
+                <p class="text-white/40 text-sm">
+                    Dibuat dengan <span class="text-red-500">❤</span> untuk komunitas roleplay terbaik di Indonesia
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- JAVASCRIPT -->
     <script>
-        // MOBILE MENU
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+        // ============================================
+        // USER IP DETECTION
+        // ============================================
+        let userIP = 'Unknown';
         
-        mobileMenuBtn.addEventListener('click', function() {
+        // Get user IP
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                userIP = data.ip;
+                const ipElement = document.getElementById('userIP');
+                if (ipElement) {
+                    ipElement.textContent = userIP;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching IP:', error);
+                userIP = '127.0.0.1'; // Fallback
+            });
+
+        // ============================================
+        // REGISTER MODAL FUNCTIONS
+        // ============================================
+        function openRegisterModal() {
+            document.getElementById('registerModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Reset form
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('verifyCodeDisplay').style.display = 'none';
+            document.getElementById('username').value = '';
+            hideError();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.classList.remove('show');
+        }
+
+        // Generate verify code (6 digit random)
+        function generateVerifyCode() {
+            return Math.floor(100000 + Math.random() * 900000);
+        }
+
+        // Copy verify code to clipboard
+        function copyVerifyCode() {
+            const code = document.getElementById('verifyCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Kode verifikasi berhasil disalin!');
+            });
+        }
+
+        // Handle registration
+        async function handleRegister(event) {
+            event.preventDefault();
+            hideError();
+
+            const username = document.getElementById('username').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Validate username
+            if (username.length < 3 || username.length > 25) {
+                showError('Username harus antara 3-25 karakter!');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('Username hanya boleh mengandung huruf, angka, dan underscore!');
+                return;
+            }
+
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>Memproses...';
+
+            try {
+                // Generate verify code
+                const verifyCode = generateVerifyCode();
+
+                // Prepare data for backend
+                const formData = {
+                    username: username,
+                    ip: userIP,
+                    verifycode: verifyCode,
+                    timestamp: Date.now()
+                };
+
+                // NOTE: Ganti URL ini dengan endpoint backend PHP Anda
+                const response = await fetch('register_ucp.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Show verify code
+                    document.getElementById('registerForm').style.display = 'none';
+                    document.getElementById('verifyCodeDisplay').style.display = 'block';
+                    document.getElementById('verifyCode').textContent = verifyCode;
+                } else {
+                    showError(result.message || 'Registrasi gagal! Silakan coba lagi.');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fa fa-user-plus mr-2"></i>DAFTAR SEKARANG';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('Terjadi kesalahan! Pastikan server backend sudah berjalan.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa fa-user-plus mr-2"></i>DAFTAR SEKARANG';
+            }
+        }
+
+        // ============================================
+        // MUSIC PLAYER FUNCTIONALITY
+        // ============================================
+        const music = document.getElementById('backgroundMusic');
+        const musicControl = document.getElementById('musicControl');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        // Auto-play music on user interaction
+        let hasInteracted = false;
+        
+        function playMusic() {
+            if (!hasInteracted) {
+                hasInteracted = true;
+                music.play().then(() => {
+                    isPlaying = true;
+                    musicControl.classList.add('music-playing');
+                    musicIcon.classList.remove('fa-volume-up');
+                    musicIcon.classList.add('fa-volume-off');
+                }).catch(err => {
+                    console.log('Autoplay prevented:', err);
+                });
+            }
+        }
+
+        // Try to play on first interaction
+        document.addEventListener('click', playMusic, { once: true });
+        document.addEventListener('touchstart', playMusic, { once: true });
+
+        // Music control button
+        musicControl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isPlaying) {
+                music.pause();
+                musicControl.classList.remove('music-playing');
+                musicIcon.classList.remove('fa-volume-off');
+                musicIcon.classList.add('fa-volume-up');
+            } else {
+                music.play();
+                musicControl.classList.add('music-playing');
+                musicIcon.classList.remove('fa-volume-up');
+                musicIcon.classList.add('fa-volume-off');
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // ============================================
+        // REAL-TIME CLOCK & DATE
+        // ============================================
+        function updateClock() {
+            const now = new Date();
+            
+            // Format time: HH:MM:SS
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            
+            // Format date: Day, DD Month YYYY
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('id-ID', options);
+            
+            document.getElementById('realTimeClock').textContent = timeString;
+            document.getElementById('realTimeDate').textContent = dateString;
+        }
+
+        // Update clock every second
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // ============================================
+        // WATER DROPLETS ON GLASS EFFECT
+        // ============================================
+        function createWaterDroplet() {
+            const glassOverlay = document.getElementById('glassOverlay');
+            const droplet = document.createElement('div');
+            droplet.className = 'water-drop';
+            
+            const size = Math.random() * 8 + 4; // 4-12px
+            const left = Math.random() * 100;
+            const duration = Math.random() * 3 + 2; // 2-5s
+            const delay = Math.random() * 2;
+            
+            droplet.style.width = size + 'px';
+            droplet.style.height = size * 1.5 + 'px';
+            droplet.style.left = left + '%';
+            droplet.style.top = '-20px';
+            droplet.style.animationDuration = duration + 's';
+            droplet.style.animationDelay = delay + 's';
+            
+            glassOverlay.appendChild(droplet);
+            
+            // Remove after animation
+            setTimeout(() => {
+                droplet.remove();
+            }, (duration + delay) * 1000);
+        }
+
+        // Create water droplets continuously
+        setInterval(() => {
+            if (window.innerWidth > 768) {
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => createWaterDroplet(), i * 200);
+                }
+            } else {
+                createWaterDroplet();
+            }
+        }, 1000);
+
+        // ============================================
+        // RAIN SPLASH EFFECT
+        // ============================================
+        function createRainSplash() {
+            const splash = document.createElement('div');
+            splash.className = 'rain-splash';
+            splash.style.left = Math.random() * 100 + '%';
+            splash.style.top = Math.random() * 100 + '%';
+            
+            document.body.appendChild(splash);
+            
+            setTimeout(() => {
+                splash.remove();
+            }, 600);
+        }
+
+        // Create splashes randomly
+        setInterval(() => {
+            if (Math.random() > 0.7 && window.innerWidth > 768) {
+                createRainSplash();
+            }
+        }, 300);
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
-            const icon = this.querySelector('i');
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                icon.classList.replace('fa-times', 'fa-bars');
-            }
+            const icon = mobileMenuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
         });
 
-        // NAVBAR SCROLL EFFECT
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('nav');
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
-                navbar.classList.add('py-2');
-                navbar.classList.remove('py-3', 'md:py-4');
-                navbar.classList.add('shadow-lg');
-                navbar.classList.add('bg-dark/2000');
+                navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+                navbar.style.boxShadow = '0 10px 30px rgba(56, 189, 248, 0.2)';
             } else {
-                navbar.classList.add('py-3', 'md:py-4');
-                navbar.classList.remove('py-2');
-                navbar.classList.remove('shadow-lg');
-                navbar.classList.remove('bg-dark/2000');
+                navbar.style.background = 'rgba(255, 255, 255, 0.05)';
+                navbar.style.boxShadow = 'none';
             }
         });
 
-        // ANIMASI HUJAN DINAMIS
-        const rainContainer = document.getElementById('rain-container');
-        const containerWidth = window.innerWidth;
-        const containerHeight = window.innerHeight;
-        const dropCount = Math.floor((containerWidth * containerHeight) / 12000);
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
 
-        function createRaindrops() {
+        // Stars Effect (Optimized)
+        function createStars() {
+            const container = document.getElementById('starsContainer');
+            const starCount = window.innerWidth < 768 ? 50 : 100; // Lebih banyak bintang
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = (Math.random() * 4 + 1) + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.willChange = 'opacity, transform';
+                container.appendChild(star);
+            }
+        }
+
+        // Rain Effect - Enhanced (Optimized)
+        function createRain() {
+            const rainContainer = document.getElementById('rainContainer');
+            const dropCount = window.innerWidth < 768 ? 80 : 150; // Tambahkan lebih banyak
+            
             for (let i = 0; i < dropCount; i++) {
                 const drop = document.createElement('div');
-                drop.classList.add('rain-drop');
-                
-                const width = Math.random() * 2.5 + 0.5;
-                const height = Math.random() * 20 + 8;
-                const left = Math.random() * containerWidth;
-                const top = Math.random() * -containerHeight;
-                const duration = Math.random() * 0.8 + 0.4;
-                
-                drop.style.width = ${width}px;
-                drop.style.height = ${height}px;
-                drop.style.left = ${left}px;
-                drop.style.top = ${top}px;
-                drop.style.animationDuration = ${duration}s;
-                drop.style.animationDelay = ${Math.random() * 3}s;
-                
+                drop.className = 'rain-drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.width = (Math.random() * 2 + 1) + 'px';
+                drop.style.height = (Math.random() * 40 + 20) + 'px'; // Lebih panjang
+                drop.style.animationDuration = (Math.random() * 0.6 + 0.3) + 's'; // Lebih cepat
+                drop.style.animationDelay = Math.random() * 3 + 's';
+                drop.style.willChange = 'transform';
+                drop.style.opacity = Math.random() * 0.5 + 0.3; // Variasi opacity
                 rainContainer.appendChild(drop);
             }
         }
 
-        function handleResize() {
-            rainContainer.innerHTML = '';
-            createRaindrops();
+        // Particles Effect - Enhanced (Optimized)
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = window.innerWidth < 768 ? 25 : 50; // Lebih banyak
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 8 + 4) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(56, 189, 248, ${Math.random() * 0.8 + 0.2})`;
+                particle.style.animationDuration = (Math.random() * 12 + 12) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                particle.style.willChange = 'transform';
+                
+                // Tambahkan blur untuk effect lebih soft
+                if (Math.random() > 0.5) {
+                    particle.style.filter = `blur(${Math.random() * 2 + 1}px)`;
+                }
+                
+                container.appendChild(particle);
+            }
         }
 
-        createRaindrops();
-        window.addEventListener('resize', handleResize);
+        // Lightning Effect (Enhanced)
+        function triggerLightning() {
+            const lightning = document.getElementById('lightning');
+            setInterval(() => {
+                if (Math.random() > 0.92) { // Lebih sering
+                    lightning.style.animation = 'none';
+                    lightning.style.background = 'rgba(56, 189, 248, 0.3)';
+                    
+                    setTimeout(() => {
+                        lightning.style.animation = 'lightning 5s infinite';
+                        lightning.style.background = '';
+                    }, 10);
+                    
+                    // Add thunder sound effect simulation with visual
+                    setTimeout(() => {
+                        lightning.style.background = 'rgba(255, 255, 255, 0.5)';
+                        setTimeout(() => {
+                            lightning.style.background = '';
+                        }, 50);
+                    }, 100);
+                }
+            }, 2000); // Lebih cepat dari 3000ms
+        }
 
-        // UPDATE PLAYER ONLINE
-        const onlineCount = document.getElementById('online-count');
-        let currentCount = parseInt(onlineCount.textContent);
+        // Online Count Animation - Enhanced
+        const onlineCount = document.getElementById('onlineCount');
+        let currentCount = 187;
         
         setInterval(() => {
-            const change = Math.floor(Math.random() * 6) - 3;
-            const newCount = Math.max(150, Math.min(250, currentCount + change));
+            const change = Math.floor(Math.random() * 15) - 7;
+            currentCount = Math.max(150, Math.min(250, currentCount + change));
             
-            if (newCount !== currentCount) {
-                currentCount = newCount;
-                onlineCount.textContent = currentCount;
-                onlineCount.style.transform = 'scale(1.3)';
-                onlineCount.style.transition = 'transform 0.3s ease';
-                
-                setTimeout(() => {
-                    onlineCount.style.transform = 'scale(1)';
-                }, 300);
-            }
-        }, 6000);
+            // Add bounce effect
+            onlineCount.style.transform = 'scale(1.3) rotate(5deg)';
+            onlineCount.textContent = currentCount;
+            
+            setTimeout(() => {
+                onlineCount.style.transform = 'scale(1) rotate(0)';
+            }, 300);
+        }, 4000);
 
-        // SCROLL ANIMASI HALUS
+        // Smooth Scroll with Animation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-
-                // TUTUP MOBILE MENU JIKA TERBUKA
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                    const icon = mobileMenuBtn.querySelector('i');
-                    icon.classList.replace('fa-times', 'fa-bars');
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Close mobile menu with animation
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.style.animation = 'slideUp 0.3s ease-out';
+                        setTimeout(() => {
+                            mobileMenu.classList.add('hidden');
+                            mobileMenu.style.animation = '';
+                            mobileMenuBtn.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                        }, 300);
+                    }
                 }
             });
         });
 
-        // ANIMASI ELEMEN SAAT SCROLL
+        // Parallax Effect - Enhanced (Optimized with RequestAnimationFrame)
+        let ticking = false;
+        let lastScrollY = 0;
+
+        window.addEventListener('scroll', () => {
+            lastScrollY = window.pageYOffset;
+            
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    // Skip parallax di mobile
+                    if (window.innerWidth > 768) {
+                        document.querySelectorAll('.parallax').forEach(element => {
+                            const speed = element.dataset.speed || 0.5;
+                            element.style.transform = `translateY(${lastScrollY * speed}px)`;
+                        });
+                        
+                        // Parallax for particles
+                        const particles = document.getElementById('particlesContainer');
+                        if (particles) {
+                            particles.style.transform = `translateY(${lastScrollY * 0.3}px)`;
+                        }
+                    }
+                    
+                    ticking = false;
+                });
+                
+                ticking = true;
+            }
+        });
+
+        // Mouse Move Effect for Cards (Optimized with Throttle)
+        let mouseMoveTimeout;
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                // Skip di mobile
+                if (window.innerWidth < 768) return;
+                
+                // Throttle untuk performance
+                if (mouseMoveTimeout) return;
+                mouseMoveTimeout = setTimeout(() => {
+                    mouseMoveTimeout = null;
+                }, 16); // ~60fps
+                
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            });
+        });
+
+        // Intersection Observer for Scroll Animations
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-up');
-                    observer.unobserve(entry.target);
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0) scale(1)';
+                    
+                    // Add extra animation for special elements
+                    if (entry.target.classList.contains('glass')) {
+                        entry.target.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    }
                 }
             });
-        }, { threshold: 0.1 });
+        }, observerOptions);
 
-        document.querySelectorAll('.card-glow, .animate-fade-up').forEach(element => {
-            observer.observe(element);
+        document.querySelectorAll('.card-hover, .stagger-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(50px) scale(0.9)';
+            observer.observe(el);
+        });
+
+        // Cursor Trail Effect (Optimized - Disabled on Mobile)
+        const cursorTrail = [];
+        const trailLength = 15; // Tambahkan sedikit
+        let lastTrailTime = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            // Disable di mobile dan tablet
+            if (window.innerWidth <= 1024) return;
+            
+            // Throttle - hanya jalankan setiap 40ms
+            const now = Date.now();
+            if (now - lastTrailTime < 40) return;
+            lastTrailTime = now;
+            
+            const trail = document.createElement('div');
+            trail.style.position = 'fixed';
+            trail.style.width = '10px';
+            trail.style.height = '10px';
+            trail.style.borderRadius = '50%';
+            trail.style.background = 'rgba(56, 189, 248, 0.6)';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            trail.style.pointerEvents = 'none';
+            trail.style.zIndex = '9999';
+            trail.style.transition = 'all 0.4s ease';
+            trail.style.willChange = 'transform, opacity';
+            trail.style.boxShadow = '0 0 15px rgba(56, 189, 248, 0.8)';
+            
+            document.body.appendChild(trail);
+            cursorTrail.push(trail);
+            
+            if (cursorTrail.length > trailLength) {
+                const oldTrail = cursorTrail.shift();
+                oldTrail.remove();
+            }
+            
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                trail.style.transform = 'scale(0)';
+            }, 50);
+            
+            setTimeout(() => {
+                trail.remove();
+            }, 400);
+        });
+
+        // Initialize All Effects (Optimized)
+        function initializeEffects() {
+            // Cek apakah user prefer reduced motion
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            
+            if (!prefersReducedMotion) {
+                createStars();
+                createRain();
+                createParticles();
+                
+                // Hanya jalankan lightning di desktop
+                if (window.innerWidth > 1024) {
+                    triggerLightning();
+                }
+            }
+        }
+
+        initializeEffects();
+
+        // Add Loading Animation (Optimized)
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.8s ease';
+                document.body.style.opacity = '1';
+            }, 50);
+        });
+
+        // Random Glitch Effect on Title (Optimized - Less Frequent)
+        setInterval(() => {
+            // Skip di mobile
+            if (window.innerWidth < 768) return;
+            
+            const titles = document.querySelectorAll('.text-glitch');
+            titles.forEach(title => {
+                if (Math.random() > 0.98) { // Lebih jarang dari 0.95
+                    title.style.animation = 'glitch 0.3s ease-in-out';
+                    setTimeout(() => {
+                        title.style.animation = '';
+                    }, 300);
+                }
+            });
+        }, 3000); // Dari 2000ms ke 3000ms
+
+        // Performance Monitor (Optional - untuk debugging)
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        function measureFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime >= lastTime + 1000) {
+                const fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                // console.log('FPS:', fps); // Uncomment untuk debug
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(measureFPS);
+        }
+        
+        // measureFPS(); // Uncomment untuk monitoring FPS
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            // Clear all intervals and timeouts
+            cursorTrail.forEach(trail => trail.remove());
+        });
+
+        // Responsive optimization - Disable heavy effects on resize to mobile
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth < 768) {
+                    // Disable cursor trail
+                    cursorTrail.forEach(trail => trail.remove());
+                    cursorTrail.length = 0;
+                }
+            }, 250);
         });
     </script>
 </body>
