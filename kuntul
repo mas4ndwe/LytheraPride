@@ -1,788 +1,121 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lythera Pride Roleplay - Server Roleplay Terbaik</title>
-    <meta name="description" content="Lythera Pride Roleplay - Tempat di mana cerita hidupmu dimulai! Rasakan petualangan roleplay tak terlupakan di tengah hujan kota.">
-    <link rel="icon" href="https://cdn.discordapp.com/attachments/1459681757719826452/1462392348238676018/file_00000000601871fa9349f721e28fc6b0.png?ex=696e0681&is=696cb501&hm=34f46a8582a617d0295a9548df37e188b44df723a2d84ecfaa465ceb83e21346&" type="image/png">
-    
-    <!-- TAILWIND CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FONT AWESOME -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
-    <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
 
-    <!-- KONFIGURASI TAILWIND -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#38bdf8',
-                        secondary: '#0ea5e9',
-                        dark: '#0f172a',
-                        light: '#f8fafc',
-                        overlay: 'rgba(15, 23, 42, 0.85)'
-                    },
-                    fontFamily: {
-                        poppins: ['Poppins', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+// Database configuration
+$db_host = 'localhost';
+$db_user = 'root'; // Ganti dengan username database Anda
+$db_pass = ''; // Ganti dengan password database Anda
+$db_name = 'LytheraOpenMP'; // Ganti dengan nama database Anda
 
-    <!-- CUSTOM STYLES -->
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .content-auto {
-                content-visibility: auto;
-            }
-            .rain-drop {
-                @apply absolute bg-primary/40 rounded-b-full pointer-events-none;
-                animation: rain linear infinite;
-            }
-            .hero-text-shadow {
-                text-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
-            }
-            .float-animation {
-                animation: float 10s ease-in-out infinite;
-            }
-            .hover-scale {
-                transition: transform 0.3s ease;
-            }
-            .hover-scale:hover {
-                transform: scale(1.03);
-            }
-            .card-glow {
-                transition: all 0.2s ease;
-            }
-            .card-glow:hover {
-                box-shadow: 0 0 50px rgb(4, 83, 180);
-            }
-        }
+// Create connection
+$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 
-        /* GLOBAL STYLES */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+// Check connection
+if ($conn->connect_error) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Koneksi database gagal!'
+    ]);
+    exit;
+}
 
-        body {
-            background: linear-gradient(to bottom, #0f172a, #1e293b);
-            min-height: 100vh;
-            overflow-x: hidden;
-            font-family: 'Poppins', sans-serif;
-        }
+// Get JSON input
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
 
-        /* ANIMASI HUJAN */
-        @keyframes rain {
-            0% {
-                transform: translateY(-10px) translateX(0) rotate(10deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) translateX(15px) rotate(10deg);
-                opacity: 0;
-            }
-        }
+if (!$data) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Data tidak valid!'
+    ]);
+    exit;
+}
 
-        /* ANIMASI FLOAT */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-25px); }
-            100% { transform: translateY(0px); }
-        }
+$username = trim($data['username']);
+$ip = $data['ip'];
+$verifycode = $data['verifycode'];
 
-        /* ANIMASI FADE DOWN */
-        @keyframes fadeDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+// Validate username
+if (strlen($username) < 3 || strlen($username) > 25) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Username harus antara 3-25 karakter!'
+    ]);
+    exit;
+}
 
-        /* ANIMASI FADE UP */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Username hanya boleh mengandung huruf, angka, dan underscore!'
+    ]);
+    exit;
+}
 
-        /* ANIMASI SCALE IN */
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+// Check if username already exists
+$stmt = $conn->prepare("SELECT id FROM ucp WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 
-        /* ANIMASI BOUNCE IN */
-        @keyframes bounceIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-            70% {
-                transform: scale(1.1);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+if ($result->num_rows > 0) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Username sudah digunakan! Silakan pilih username lain.'
+    ]);
+    $stmt->close();
+    exit;
+}
+$stmt->close();
 
-        /* ANIMASI KLASSES */
-        .animate-fade-down {
-            animation: fadeDown 0.8s ease forwards;
-            opacity: 0;
-        }
-        .animate-fade-up {
-            animation: fadeUp 0.8s ease forwards;
-            opacity: 0;
-        }
-        .animate-scale-in {
-            animation: scaleIn 1s ease forwards;
-            opacity: 0;
-        }
-        .animate-bounce-in {
-            animation: bounceIn 0.8s ease forwards;
-            opacity: 0;
-        }
-        .delay-100 { animation-delay: 0.5s; }
-        .delay-200 { animation-delay: 0.6s; }
-        .delay-300 { animation-delay: 0.7s; }
-        .delay-400 { animation-delay: 0.8s; }
-        .delay-500 { animation-delay: 0.9s; }
-        .delay-600 { animation-delay: 0.10s; }
-    </style>
-</head>
-<body>
-    <!-- CONTAINER HUJAN -->
-    <div id="rain-container" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></div>
+// Check if IP already has an account
+$stmt = $conn->prepare("SELECT id FROM ucp WHERE ip = ?");
+$stmt->bind_param("s", $ip);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    <!-- NAVBAR -->
-    <nav class="fixed top-0 w-full bg-dark/60 backdrop-blur-md z-50 transition-all duration-300">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="flex justify-between items-center py-3 md:py-4">
-                <!-- LOGO -->
-                <div class="flex items-center">
-                    <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462319248754872320/lytherapressss.png?ex=696dc26d&is=696c70ed&hm=56ad4d8506cb132770b630a81fa2fcd82239540d4cfb62d840f7a6fb0b6fe75f&" alt="Lythera Pride Roleplay" class="w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-primary">
-                    <span class="ml-2 text-white font-bold text-lg md:text-xl">
-                        <span class="text-primary">LYTHERA</span> <span class="hidden sm:inline">PRIDE</span>
-                    </span>
-                </div>
+if ($result->num_rows > 0) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'IP Address Anda sudah terdaftar! Satu IP hanya dapat membuat 1 akun UCP.'
+    ]);
+    $stmt->close();
+    exit;
+}
+$stmt->close();
 
-                <!-- MENU DESKTOP -->
-                <div class="hidden md:flex items-center gap-6 md:gap-8">
-                    <a href="#about" class="text-white hover:text-primary transition-colors text-sm md:text-base">TENTANG</a>
-                    <a href="#features" class="text-white hover:text-primary transition-colors text-sm md:text-base">FITUR</a>
-                    <a href="https://sa-mp.co.id/" class="text-white hover:text-primary transition-colors text-sm md:text-base">DOWNLOAD</a>
-                    <a href="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" class="text-white hover:text-primary transition-colors text-sm md:text-base">GALERI</a>
-                    <a href="#rules" class="text-white hover:text-primary transition-colors text-sm md:text-base">PERATURAN</a>
-                    <a href="https://discord.gg/rRZ9MRpN8P" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-full font-medium transition-all hover:shadow-lg hover:shadow-primary/40">MASUK</a>
-                </div>
+// Generate secure password with SHA256 and salt
+$salt = bin2hex(random_bytes(32)); // Generate 64 character salt
+$password = hash('sha256', $username . time() . $salt); // Generate unique password
+$hashed_password = hash('sha256', $password . $salt); // Hash password with salt
 
-                <!-- MENU MOBILE -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-btn" class="text-white text-2xl">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+// Get current timestamp
+$registerdate = time();
 
-        <!-- MOBILE MENU DROPDOWN -->
-        <div id="mobile-menu" class="md:hidden bg-dark/95 backdrop-blur-md hidden px-4 py-3">
-            <div class="flex flex-col gap-4">
-                <a href="#about" class="text-white hover:text-primary transition-colors py-2">TENTANG</a>
-                <a href="#features" class="text-white hover:text-primary transition-colors py-2">FITUR</a>
-                <a href="https://sa-mp.co.id/" class="text-white hover:text-primary transition-colors py-2">DOWNLOAD</a>
-                <a href="#gallery" class="text-white hover:text-primary transition-colors py-2">GALERI</a>
-                <a href="#rules" class="text-white hover:text-primary transition-colors py-2">PERATURAN</a>
-                <a href="https://discord.gg/rRZ9MRpN8P" class="bg-primary text-white px-4 py-2 rounded-full font-medium text-center">MASUK</a>
-            </div>
-        </div>
-    </nav>
+// Insert new user
+$stmt = $conn->prepare("INSERT INTO ucp (username, verifycode, password, salt, ip, admin, registerdate, extrac, security) VALUES (?, ?, ?, ?, ?, 0, ?, 0, 0)");
+$stmt->bind_param("sisssi", $username, $verifycode, $hashed_password, $salt, $ip, $registerdate);
 
-    <!-- HERO SECTION -->
-    <section class="relative min-h-screen flex items-center overflow-hidden">
-        <div class="absolute inset-0 bg-overlay z-10"></div>
-        <div class="container mx-auto px-4 md:px-6 relative z-20 py-20">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                <div class="animate-fade-down">
-                    <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-extrabold leading-tight hero-text-shadow">
-                        <span class="text-primary block">LYTHERA</span>
-                        <span class="text-white">PRIDE</span>
-                        <span class="text-primary/90 block text-[clamp(1.8rem,4vw,3rem)]">ROLEPLAY</span>
-                    </h1>
-                    <p class="text-white/90 text-lg md:text-xl mt-4 max-w-xl">
-                        Tempat di mana cerita hidupmu dimulai - Rasakan petualangan roleplay yang realistis dan tak terlupakan di tengah hujan kota!
-                    </p>
-                    <div class="flex flex-wrap gap-4 mt-8">
-                        <a href="https://sa-mp.co.id/" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-semibold transition-all hover:shadow-xl hover:shadow-primary/30">
-                            <i class="fa fa-download mr-2"></i> UNDUH SEKARANG
-                        </a>
-                        <a href="https://discord.gg/rRZ9MRpN8P" class="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 px-6 py-3 rounded-full font-semibold transition-all">
-                            <i class="fab fa-discord mr-2"></i> GABUNG DISCORD
-                        </a>
-                    </div>
-                    <div class="flex items-center gap-6 mt-8">
-                        <div class="flex -space-x-2">
-                            <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462393381811650661/1111-removebg-preview.png?ex=696e0778&is=696cb5f8&hm=7f51d2bbcf4c301aa23b20d5f04ab72e660eb6630277e180f5864ccce24e7ed4&" alt="Player" class="w-20 h-30 rounded-full border-20 border-dark">
-                        </div>
-                        <div class="text-white">
-                            <span class="text-primary font-bold text-xl" id="online-count">187</span>
-                            <span class="text-white/80"> Pemain Online</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="hidden lg:block animate-scale-in">
-                    <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Lythera Pride Roleplay" class="w-full max-w-md mx-auto rounded-full border-4 border-primary/30 float-animation hover-scale shadow-2xl shadow-primary/20">
-                </div>
-            </div>
-        </div>
-    </section>
+if ($stmt->execute()) {
+    echo json_encode([
+        'success' => true,
+        'message' => 'Registrasi berhasil!',
+        'data' => [
+            'username' => $username,
+            'verifycode' => $verifycode,
+            'registerdate' => date('Y-m-d H:i:s', $registerdate)
+        ]
+    ]);
+} else {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Gagal menyimpan data! Error: ' . $stmt->error
+    ]);
+}
 
-    <!-- ABOUT SECTION -->
-    <section id="about" class="py-20 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">TENTANG SERVER</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Lythera Pride Roleplay adalah server roleplay dengan fokus pada cerita yang mendalam, komunitas yang ramah, dan pengalaman bermain yang tak terlupakan.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="animate-fade-up delay-100">
-                    <div class="grid grid-cols-2 gap-3">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390344992948224/mechanic.jpg?ex=696e04a4&is=696cb324&hm=10fbb17eeb95d2f119fedeece79b324b123f7c4dbd08e6874ad001e169306824&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390345307394144/badside.jpg?ex=696e04a4&is=696cb324&hm=bb4729a5e23b460b3a8b195b92dfd10ca4eae9e83f73dcf61fe40c0562a43611&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow mt-6">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390345651322944/company.jpg?ex=696e04a4&is=696cb324&hm=db12d3e551a01d2e59c4e50ebe6c2b767d573cc51578de1ef11a8584b0e4794a&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow">
-                        <img src="https://media.discordapp.net/attachments/1459681757719826452/1462390346011901972/faction.jpg?ex=696e04a4&is=696cb324&hm=411c5da4215678ec2759ce1105ebedeceb6ba15ee77359b5e0ff27d16a00995f&=&format=webp&width=668&height=668" alt="Server Screenshot" class="rounded-lg hover-scale shadow-lg shadow-primary/10 card-glow mt-6">
-                    </div>
-                </div>
-
-                <div class="animate-fade-up delay-200">
-                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-6">
-                        Dunia <span class="text-primary">Lythera</span> yang Mengagumkan
-                    </h3>
-                    <p class="text-white/80 mb-6">
-                        Didirikan pada tahun 2023, Lythera Pride Roleplay telah berkembang menjadi salah satu server roleplay terkemuka dengan ribuan pemain aktif setiap hari. Dikelola oleh tim profesional dengan pengalaman bertahun-tahun dalam industri game.
-                    </p>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Sistem Roleplay Realistis</h4>
-                                <p class="text-white/70">Struktur roleplay yang terorganisir dengan aturan yang jelas dan adil.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Event Mingguan Seru</h4>
-                                <p class="text-white/70">Event khusus setiap minggu yang menghibur dan memberikan hadiah menarik.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Tim Admin Profesional</h4>
-                                <p class="text-white/70">Admin yang responsif dan siap membantu pemain kapan saja.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="bg-primary/20 p-2 rounded-full mt-1">
-                                <i class="fa fa-check text-primary"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Update Konten Berkala</h4>
-                                <p class="text-white/70">Konten baru dan perbaikan sistem secara teratur untuk pengalaman terbaik.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="#features" class="inline-block mt-8 bg-primary/10 hover:bg-primary/20 text-primary px-5 py-2 rounded-full font-medium transition-all">
-                        Lihat Fitur Lengkap <i class="fa fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FEATURES SECTION -->
-    <section id="features" class="py-20 bg-dark/50 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">FITUR UNGGULAN</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Nikmati berbagai fitur canggih yang membuat pengalaman roleplay kamu semakin seru dan menyenangkan.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- FEATURE 1 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-map-marker text-3xl text-primary"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">PETA YANG LUAS</h3>
-                    <p class="text-white/70">
-                        Lanskap yang beragam mulai dari kota modern, pedesaan hijau, hingga pantai yang indah - semua dirancang dengan detail tinggi dan realistis.
-                    </p>
-                </div>
-
-                <!-- FEATURE 2 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-100">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-users text-3xl text-primary"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">KOMUNITAS RAMAH</h3>
-                    <p class="text-white/70">
-                        Komunitas yang terdiri dari pemain dengan berbagai latar belakang, semua bersatu dengan cinta terhadap roleplay dan saling menghargai.
-                    </p>
-                </div>
-
-                <!-- FEATURE 3 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-200">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-cogs text-3xl text-primary"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">SISTEM TERBARU</h3>
-                    <p class="text-white/70">
-                        Dilengkapi dengan sistem-sistem terbaru seperti ekonomi realistis, pekerjaan beragam, transportasi modern, dan interaksi sosial yang kaya.
-                    </p>
-                </div>
-
-                <!-- FEATURE 4 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-300">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-briefcase text-3xl text-primary"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">PEKERJAAN BERAGAM</h3>
-                    <p class="text-white/70">
-                        Lebih dari 50 jenis pekerjaan yang bisa kamu pilih mulai dari pekerja biasa hingga profesi khusus dengan karir yang jelas dan menguntungkan.
-                    </p>
-                </div>
-
-                <!-- FEATURE 5 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-400">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-gavel text-3xl text-primary"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">SISTEM HUKUM ADIL</h3>
-                    <p class="text-white/70">
-                        Sistem hukum yang realistis dengan polisi profesional, pengadilan yang adil, dan konsekuensi yang jelas untuk setiap pelanggaran aturan.
-                    </p>
-                </div>
-
-                <!-- FEATURE 6 -->
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 hover-scale card-glow animate-fade-up delay-500">
-                    <div class="bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-5">
-                        <i class="fa fa-gift text-3xl text-primary"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-semibold mb-3">EVENT MENARIK</h3>
-                    <p class="text-white/70">
-                        Event mingguan yang menghibur mulai dari balapan mobil, lomba musik, festival budaya, hingga misi khusus yang hanya ada di Lythera!
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DOWNLOAD SECTION -->
-    <section id="download" class="py-20 bg-dark/50 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">MULAI BERMAIN</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Ikuti langkah mudah ini untuk bergabung dengan komunitas kami dan mulai petualanganmu di dunia Lythera!
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="animate-fade-up">
-                    <div class="space-y-8">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">1</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">UNDUH LAUNCHER</h3>
-                                <p class="text-white/70 mt-1">Klik tombol di samping untuk mengunduh launcher resmi Lythera Pride Roleplay yang aman dan terpercaya.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">2</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">DAFTAR AKUN</h3>
-                                <p class="text-white/70 mt-1">Buat akunmu melalui launcher atau melalui halaman registrasi di Discord kami dengan mudah dan cepat.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">3</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">BACA PERATURAN</h3>
-                                <p class="text-white/70 mt-1">Pelajari peraturan server agar pengalaman bermainmu lebih menyenangkan dan terhindar dari masalah yang tidak diinginkan.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="bg-primary w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl">4</div>
-                            <div>
-                                <h3 class="text-white text-xl font-semibold">MULAI BERMAIN</h3>
-                                <p class="text-white/70 mt-1">Hubungkan diri ke server dan mulailah petualanganmu di dunia Lythera dengan membuat karakter dan cerita kamu sendiri!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="animate-fade-up delay-100">
-                    <div class="bg-dark/60 backdrop-blur-md rounded-2xl p-8 border border-primary/30 card-glow">
-                        <div class="text-center mb-6">
-                            <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Launcher Icon" class="w-20 h-20 mx-auto rounded-full border-2 border-primary">
-                            <h3 class="text-white text-2xl font-bold mt-4">UNDUH SEKARANG</h3>
-                            <p class="text-white/70 mt-2">Launcher berukuran sekitar 5GB dengan total data server 45GB</p>
-                            <div class="flex justify-center gap-2 mt-4">
-                                <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Latest Version</span>
-                                <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Support in server</span>
-                            </div>
-                        </div>
-
-                        <div class="space-y-4">
-                            <a href="https://sa-mp.co.id/" class="block w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10 text-center px-6 py-3 rounded-full font-semibold transition-all">
-                                <i class="fa fa-download mr-2"></i> UNDUH LAUNCHER (PC)
-                            </a>
-                            <a href="https://sa-mp.co.id/" class="block w-full bg-transparent border-2 border-primary text-primary hover:bg-primary/10 text-center px-6 py-3 rounded-full font-semibold transition-all">
-                                <i class="fa fa-file-text-o mr-2"></i> UNDUH LAUNCHER (ANDROID)
-                            </a>
-                        </div>
-
-                        <div class="mt-8 text-center">
-                            <p class="text-white/80 mb-3">Atau bergabung dengan Discord kami untuk informasi terbaru:</p>
-                            <a href="#" class="inline-block bg-[#5865F2] hover:bg-[#5865F2]/90 text-white px-6 py-2 rounded-full font-semibold transition-all hover:shadow-xl hover:shadow-[#5865F2]/30">
-                                <i class="fab fa-discord mr-2"></i> JOIN DISCORD KAMI
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- RULES SECTION -->
-    <section id="rules" class="py-20 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="text-center mb-16 animate-fade-up">
-                <h2 class="text-[clamp(1.8rem,4vw,3rem)] font-bold text-primary">PERATURAN SERVER</h2>
-                <div class="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
-                <p class="text-white/80 max-w-2xl mx-auto mt-4">
-                    Peraturan ini dibuat untuk menjaga kenyamanan dan kesenangan semua pemain dalam bermain di server kami.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-up delay-100">
-<div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 card-glow">
-                    <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
-                        <i class="fa fa-exclamation-circle text-primary mr-2"></i> PERATURAN UMUM
-                    </h3>
-                    <ul class="space-y-3 text-white/80">
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan menggunakan cheat, hack, atau program ilegal lainnya untuk mendapatkan keuntungan yang tidak adil.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan melakukan spam chat, iklan tidak relevan, atau mengganggu pemain lain.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan menggunakan bahasa kasar, ujaran kebencian, atau melakukan pelecehan terhadap pemain lain.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan menyebarkan konten negatif, pornografi, atau konten yang melanggar hukum.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Harap menghormati admin dan semua pemain tanpa memandang latar belakang atau preferensi pribadi.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-dark/40 backdrop-blur-sm rounded-xl p-6 border border-primary/20 card-glow">
-                    <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
-                        <i class="fa fa-book text-primary mr-2"></i> PERATURAN ROLEPLAY
-                    </h3>
-                    <ul class="space-y-3 text-white/80">
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Selalu main dengan gaya roleplay yang realistis dan sesuai dengan dunia Lythera.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan melakukan "Powergaming" atau "Metagaming" yang merusak keseruan roleplay.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Semua aksi dalam roleplay harus sesuai dengan karakter yang kamu mainkan.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Tidak diperbolehkan membunuh pemain lain tanpa alasan yang jelas dalam roleplay (Deathmatch).</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i class="fa fa-circle text-primary text-xs mt-1.5"></i>
-                            <span>Harap menggunakan bahasa Indonesia yang baik dan benar dalam chat roleplay.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="text-center mt-10 animate-fade-up delay-200">
-                <a href="#" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-semibold transition-all hover:shadow-xl hover:shadow-primary/30">
-                    <i class="fa fa-file-text-o mr-2"></i> KEMBALI KE ATAS
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-dark py-12 border-t border-primary/20 relative">
-        <div class="container mx-auto px-4 md:px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <img src="https://cdn.discordapp.com/attachments/1459681757719826452/1462391359489966130/file_000000000b5871faa77d9025f2ae5306.png?ex=696e0596&is=696cb416&hm=05efe164e254443a9600e9d8394336d3746bac34264631c34ec7aaab7f6e8761&" alt="Lythera Pride Roleplay" class="w-10 h-10 rounded-full border-2 border-primary">
-                        <span class="ml-2 text-white font-bold text-xl">
-                            <span class="text-primary">LYTHERA</span> PRIDE
-                        </span>
-                    </div>
-                    <p class="text-white/70 mb-4">
-                        Tempat di mana cerita hidupmu dimulai - Rasakan petualangan roleplay tak terlupakan di tengah hujan kota!
-                    </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-discord"></i>
-                        </a>
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="#" class="bg-primary/20 hover:bg-primary/40 text-primary w-10 h-10 rounded-full flex items-center justify-center transition-all">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">LINK CEPAT</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#about" class="text-white/70 hover:text-primary transition-colors">Tentang Kami</a></li>
-                        <li><a href="#features" class="text-white/70 hover:text-primary transition-colors">Fitur Server</a></li>
-                        <li><a href="#download" class="text-white/70 hover:text-primary transition-colors">Download Launcher</a></li>
-                        <li><a href="#rules" class="text-white/70 hover:text-primary transition-colors">Peraturan Server</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">DUKUNGAN</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Pusat Bantuan</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Buat Tiket</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Panduan Bermain</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Laporkan Masalah</a></li>
-                        <li><a href="#" class="text-white/70 hover:text-primary transition-colors">Hubungi Kami</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">KONTAK KAMI</h3>
-                    <ul class="space-y-2">
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-envelope text-primary mt-1"></i>
-                            <span>support@lytherapriderp.id</span>
-                        </li>
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-map-marker text-primary mt-1"></i>
-                            <span>Indonesia-Asia/Jakarta</span>
-                        </li>
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-clock-o text-primary mt-1"></i>
-                            <span>Server Aktif 24 Jam Nonstop</span>
-                        </li>
-                        <li class="flex items-start gap-2 text-white/70">
-                            <i class="fa fa-users text-primary mt-1"></i>
-                            <span>Total Pemain: 12.890+</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="border-t border-primary/10 pt-8 text-center">
-                <p class="text-white/60">
-                    &copy; <?php echo date("Y"); ?> Lythera Pride Roleplay. Semua Hak Dilindungi.
-                </p>
-                <p class="text-white/50 text-sm mt-2">
-                    Dibuat dengan ❤ untuk komunitas roleplay terbaik di Indonesia
-                </p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JAVASCRIPT -->
-    <script>
-        // MOBILE MENU
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-            const icon = this.querySelector('i');
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                icon.classList.replace('fa-times', 'fa-bars');
-            }
-        });
-
-        // NAVBAR SCROLL EFFECT
-        window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                navbar.classList.add('py-2');
-                navbar.classList.remove('py-3', 'md:py-4');
-                navbar.classList.add('shadow-lg');
-                navbar.classList.add('bg-dark/2000');
-            } else {
-                navbar.classList.add('py-3', 'md:py-4');
-                navbar.classList.remove('py-2');
-                navbar.classList.remove('shadow-lg');
-                navbar.classList.remove('bg-dark/2000');
-            }
-        });
-
-        // ANIMASI HUJAN DINAMIS
-        const rainContainer = document.getElementById('rain-container');
-        const containerWidth = window.innerWidth;
-        const containerHeight = window.innerHeight;
-        const dropCount = Math.floor((containerWidth * containerHeight) / 12000);
-
-        function createRaindrops() {
-            for (let i = 0; i < dropCount; i++) {
-                const drop = document.createElement('div');
-                drop.classList.add('rain-drop');
-                
-                const width = Math.random() * 2.5 + 0.5;
-                const height = Math.random() * 20 + 8;
-                const left = Math.random() * containerWidth;
-                const top = Math.random() * -containerHeight;
-                const duration = Math.random() * 0.8 + 0.4;
-                
-                drop.style.width = ${width}px;
-                drop.style.height = ${height}px;
-                drop.style.left = ${left}px;
-                drop.style.top = ${top}px;
-                drop.style.animationDuration = ${duration}s;
-                drop.style.animationDelay = ${Math.random() * 3}s;
-                
-                rainContainer.appendChild(drop);
-            }
-        }
-
-        function handleResize() {
-            rainContainer.innerHTML = '';
-            createRaindrops();
-        }
-
-        createRaindrops();
-        window.addEventListener('resize', handleResize);
-
-        // UPDATE PLAYER ONLINE
-        const onlineCount = document.getElementById('online-count');
-        let currentCount = parseInt(onlineCount.textContent);
-        
-        setInterval(() => {
-            const change = Math.floor(Math.random() * 6) - 3;
-            const newCount = Math.max(150, Math.min(250, currentCount + change));
-            
-            if (newCount !== currentCount) {
-                currentCount = newCount;
-                onlineCount.textContent = currentCount;
-                onlineCount.style.transform = 'scale(1.3)';
-                onlineCount.style.transition = 'transform 0.3s ease';
-                
-                setTimeout(() => {
-                    onlineCount.style.transform = 'scale(1)';
-                }, 300);
-            }
-        }, 6000);
-
-        // SCROLL ANIMASI HALUS
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-
-                // TUTUP MOBILE MENU JIKA TERBUKA
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                    const icon = mobileMenuBtn.querySelector('i');
-                    icon.classList.replace('fa-times', 'fa-bars');
-                }
-            });
-        });
-
-        // ANIMASI ELEMEN SAAT SCROLL
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-up');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.card-glow, .animate-fade-up').forEach(element => {
-            observer.observe(element);
-        });
-    </script>
-</body>
-</html>
+$stmt->close();
+$conn->close();
+?>
